@@ -24,3 +24,7 @@ desktop.ini
 npm-debug.log*
 tmp/
 .cache/
+
+# EdgeOne CLI 本地状态（含项目绑定与登录态，禁止入库）
+.edgeone/
+
