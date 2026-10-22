@@ -5,7 +5,7 @@
    四款游戏的结算态各不相同：
    - 神笔球王：modal 打开且内容含"评级"（结束弹窗，非开始菜单）
    - 狼之盘带：ovClear 通关浮层打开，读 cScore（本关得分）
-   - 狼之棋阵：modal 打开且内容含"淘汰/冠军"（赛季结算，非局中强化）
+   - 狼之棋阵：modal 打开且出现 #btnAgain（仅赛季结算弹窗有）
    - 绝技连连看：winov 通关浮层打开，读 sScore
    ============================================================ */
 (function(){
@@ -36,7 +36,11 @@ const GAME_CFG = {
     name: '狼之棋阵',
     isEnd: doc => {
       const m = doc.getElementById('modal'), s = doc.getElementById('sheet');
-      return !!(m && s && m.classList.contains('on') && /淘汰|冠军/.test(s.textContent || ''));
+      if(!(m && s && m.classList.contains('on'))) return false;
+      /* 只认赛季结算弹窗：它带「再来一局」按钮（#btnAgain）。
+         开局菜单带 #btnStart、局中战报带 #btnNext、玩法说明带 #btnCloseHelp，
+         文案里同样会出现「冠军 / 淘汰」，仅靠文本判断会把开局当成结算。 */
+      return !!doc.getElementById('btnAgain');
     },
     score: doc => {
       const el = doc.getElementById('pStage');
@@ -70,7 +74,7 @@ function startBridge(iframe, gameId, onScore){
   if(!cfg || !iframe){ console.warn('[bridge] 未知游戏', gameId); return; }
   let lastReported = 0, closeTimer = null;
 
-  setInterval(() => {
+  const timer = setInterval(() => {
     let doc;
     try{ doc = iframe.contentDocument; }catch(e){ return; }   // 跨域则放弃
     if(!doc || !doc.getElementById) return;
@@ -85,7 +89,11 @@ function startBridge(iframe, gameId, onScore){
         lastReported = score;
         const pts = cfg.toPoints(score);
         try{
-          parent.postMessage({ type: 'wolf:score', game: gameId, score: score, points: pts }, '*');
+          /* 只在被外层容器嵌入时广播给父窗口。顶层打开时 parent === window，
+             自我投递会被 play.html 自己的 message 监听器再收一次 → 积分翻倍。 */
+          if(window.parent && window.parent !== window){
+            window.parent.postMessage({ type: 'wolf:score', game: gameId, score: score, points: pts }, '*');
+          }
         }catch(e){}
         if(onScore) onScore(score, pts);
       }
@@ -97,6 +105,7 @@ function startBridge(iframe, gameId, onScore){
       }, 2500);
     }
   }, 900);
+  return timer;               // 返回计时器，便于测试/销毁
 }
 
 window.WolfBridge = { GAME_CFG, startBridge };

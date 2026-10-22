@@ -166,17 +166,15 @@ wolf-ip-site/
 │   ├── wolf-tft/index.html         # 狼之棋阵·足球明星自走棋
 │   └── football-linkgame/index.html# 绝技连连看
 ├── server/                     # 后端 API 骨架（Node 22 原生模块，零 npm 依赖）
-│   ├── server.js               # 13 个端点 + 建表 + 演示登录态/管理员 token
+│   ├── server.js               # 14 个端点 + 建表 + 演示登录态/管理员 token
 │   └── package.json
 ├── miniprogram/                # 小程序壳（AR 主轨）接入说明
 ├── manifest.webmanifest        # PWA 清单（名称/图标/快捷方式/主题色）
 ├── sw.js                       # Service Worker（导航网络优先、静态缓存优先 + 运行时入库）
-├── docs/                       # 验证器（verify.js 274 项）与工具脚本
-│   ├── verify.js               #   全站逻辑级自检（编译/运行/引用/结构/PWA/og/展览墙）
-│   ├── make-og-image.py        #   分享卡图生成（1200×630）
-│   ├── inject-og.py            #   og 元数据批量注入（幂等）
-│   ├── prepare-player-photos.py#   球员真人照片一键裁切转正
-│   └── cutout-mascot.py        #   官方海报抠图（透明底苏小狼）
+├── edgeone.json                # EdgeOne Makers 部署配置（输出目录 / 缓存头 / 安全头）
+├── docs/                       # 验证器（verify.js，329 项）与回归测试（bridge-test.js）
+│   ├── verify.js               #   全站自检（页面/引用/SW/manifest/部署配置/语法）
+│   └── bridge-test.js          #   分数回传桥回归（开局误判 / 重复入账）
 └── 404.html                    # 品牌化错误页
 ```
 
@@ -188,6 +186,7 @@ wolf-ip-site/
 
 | 方法 | 路径 | 说明 |
 | --- | --- | --- |
+| GET | `/api/health` | 健康检查（部署探活） |
 | GET | `/api/me` | 我的资料 + 积分余额 |
 | POST | `/api/checkin` | 每日签到（幂等；连签 7 天起 +20） |
 | POST | `/api/game/score` | 游戏结算回传（gameId, score, durationSec）→ 服务端验分 + 日上限结算 |
@@ -201,6 +200,10 @@ wolf-ip-site/
 | POST/PUT/DELETE | `/api/admin/news` | 后台资讯管理（演示 token：请求头 `x-admin-token`） |
 
 **数据表**：`users`、`points_log`（积分流水，一切可追溯）、`blindbox`（含实物/电子形式标记，支撑线下核销）、`news`（资讯/赛程/赛果，后台可管理）。
+
+> 端点计数：上表 11 条业务路由（含 `/api/health`）+ 3 个后台方法 = 14。CORS 预检已放行 `GET/POST/PUT/DELETE/OPTIONS` 与 `x-admin-token`。
+>
+> 部署形态：纯静态站可直接托管任意静态服务器；Makers 部署需把输出目录设为 `.`，`404.html` 由平台自动识别，`/sw.js` 的 `no-cache` 与静态资源缓存策略写在 `edgeone.json`。真防刷需把积分三接口迁到 Makers Functions + KV。
 
 **配置化设计**：盲盒奖池权重、每日任务开关与积分、资讯条目由 `admin.html` 管理，演示期存 localStorage（key `wolf.admin.v1`，可导出 JSON 迁移），由 `assets/js/data.js` 统一读取；正式版切换为后端 `/api/admin/*` 与 `/api/news` 下发，消费端代码不变。
 

@@ -9,10 +9,10 @@
    ============================================================ */
 'use strict';
 
-/* v8：模型从 12 万面 / baseColor 2048（4.4 MB）换成 30 万面 / 4096（10.8 MB），
-   并且 ar-webgl.js 补了 glTF 的 sRGB→线性→sRGB 正确往返。
-   wolf.glb 走的是运行时缓存（cache-first），不 bump 的话老访客会一直拿到旧的 4.4 MB 模型 */
-const VERSION = 'wolf-v12';
+/* v13：修复游戏结算重复入账、狼之棋阵开局被误判为赛季结束；
+   AR 页统一走程序化建模，不再加载任何 GLB 模型文件。
+   bump VERSION 让老访客丢弃旧缓存、拿到新的 bridge.js / play.html */
+const VERSION = 'wolf-v13';
 const CORE = [
   './',
   './index.html',
@@ -42,9 +42,8 @@ const CORE = [
   './assets/img/covers/wolf-tft.jpg',
   './assets/img/covers/football-linkgame.jpg'
 ];
-/* assets/models/wolf.glb（4.4 MB）故意不放进 CORE：装 SW 就把 4.4 MB 推给每个
-   访客太重了。它走下面的"静态资源：缓存优先 + 运行时入库"——只要打开过一次
-   AR 页就进缓存，之后离线也能用；没用过 AR 的人不付这 4.4 MB 流量。 */
+/* 说明：AR 页（ar.html）以 badge:true 走程序化建模分支，不下载任何模型文件，
+   所以 CORE 里没有任何 .glb；其余静态资源走下方「缓存优先 + 运行时入库」。 */
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

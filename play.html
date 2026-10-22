@@ -146,7 +146,14 @@ if(gotToday > 0){
 /* ---- 分数回传 ---- */
 let sessionPts = 0;
 const sessionEl = $('#sessionPts');
+/* 同一次结算可能同时走「bridge 回调」和「postMessage 兜底」两条路，
+   2.5s 内同签名的第二次投递直接忽略，避免重复入账 */
+let lastSig = '', lastSigAt = 0;
 function onScore(score, pts){
+  const sig = gid + '|' + score + '|' + pts;
+  const now = Date.now();
+  if(sig === lastSig && now - lastSigAt < 2500) return;
+  lastSig = sig; lastSigAt = now;
   recordBest(gid, score);          // 最高分照记（积分封顶不影响纪录）
   const real = addGamePoints(gid, meta.name, pts);
   if(real > 0){

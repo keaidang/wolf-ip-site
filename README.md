@@ -4,6 +4,8 @@
 
 **线上地址**：https://wolf-football-park.app.workbuddy.host/ （2026-10-19 首次发布；在「设置—数据管理—应用」中管理）
 
+**代码仓库**：https://github.com/keaidang/wolf-ip-site
+
 ## 快速开始
 
 ```bash
@@ -15,8 +17,11 @@ npx serve .                # 或者 python -m http.server 8080
 cd server
 node server.js             # http://localhost:3000/api/health
 
-# 3. 全站自检（274 项逻辑级检查，替代浏览器渲染验证）
+# 3. 全站自检（页面/引用/SW/manifest/部署配置/语法，零依赖）
 node docs/verify.js
+
+# 4. 分数回传桥回归测试（开局误判 / 重复入账）
+node docs/bridge-test.js
 ```
 
 打开 `http://localhost:8080`（或 serve 给出的端口）即可浏览全站。
@@ -48,7 +53,7 @@ node docs/verify.js
 
 十幅写实肖像（AI 生成演示素材，900×1200 · 3:4）已按拼音命名落入 `assets/img/players/` 并全部上墙；如需更换照片，放入后刷新 `players.html` 即自动替换，**无需改代码**：
 
-- **一键通道**：原始照片（任意文件名）放入 `assets/img/players-raw/`，运行 `python docs/prepare-player-photos.py`，脚本按姓名/拼音/号码匹配，EXIF 转正 → 居中裁 3:4 → 限宽 900 → 落入 `assets/img/players/`
+- **一键通道**：原始照片（任意文件名）放入 `assets/img/players-raw/` 后按下方命名表手动裁切落盘（早期批量脚本未随仓库发布）
 - **手动通道**：按 `assets/img/players/README.md` 命名表放置，如 1 号门将 → `gu-tianchi.jpg`（竖版 3:4 最佳）
 - 照片缺失时该画框继续展示剪影展签，页面不报错
 
@@ -59,12 +64,12 @@ node docs/verify.js
 - **零依赖静态站**：原生 HTML/CSS/JS，无构建无框架；导航/页脚由 `assets/js/app.js` 统一注入
 - **PC/手机全兼容**：响应式断点（展厅 4→3→2→1 列）、刘海安全区（`env(safe-area-inset)`）、触屏目标 ≥44px、iOS 聚焦缩放防护（触屏表单 16px）、横向溢出裁剪、`prefers-reduced-motion` 降级；游戏内教学视频的 B 站缩略图已全部本地化，断网完整可玩
 - **PWA**：`manifest.webmanifest` + `sw.js`（页面网络优先、静态资源缓存优先并运行时入库）——手机可"添加到主屏幕"，游戏玩过一次后离线可玩；三枚图标（192/512/maskable）
-- **分享卡片**：13 页均注入 og/twitter 元数据，微信转发显示带苏小狼的卡片；分享卡图由 `docs/make-og-image.py` 生成（1200×630，120KB）
+- **分享卡片**：13 页均注入 og/twitter 元数据，微信转发显示带苏小狼的卡片；分享卡图为预生成资源 `assets/img/og-image.jpg`（1200×630）
 - **浅色/深色双主题**：全站 CSS 变量驱动，导航栏 🌙 按钮切换，跟随系统偏好并记忆选择（`wolf.theme`）
 - **真实最高分**：游戏卡显示本站记录的最高分（`wolfStore.v1.best`），与游戏本体解耦，不碰已验证的游戏文件
 - **游戏零重构嵌入**：四款单文件游戏经 iframe 嵌入 `play.html`，分数回传桥（`assets/js/bridge.js`）轮询结算态自动折算积分
 - **数据配置化**：资讯/奖池/任务在 `admin.html` 后台管理（演示期存 localStorage，可导出 JSON），由 `assets/js/data.js` 统一读取，正式版切后端 API 消费端零改动
-- **积分双轨**：前端 localStorage 演示闭环（离线可演）；后端 `server/server.js`（Node 22 原生 node:http + node:sqlite，13 个端点）持有倍率真相并验分
+- **积分双轨**：前端 localStorage 演示闭环（离线可演）；后端 `server/server.js`（Node 22 原生 node:http + node:sqlite，14 个端点）持有倍率真相并验分
 - **AR 双轨**：小程序 AR 主轨（见 `miniprogram/README.md`，正式版按规范落地）+ 网页版 WebAR 实机轨（`assets/js/ar-webgl.js` 手写 WebGL 零依赖渲染：按官方立版还原的 Q 版苏小狼——大圆头灰毛、白脸罩、怒眉大眼高光、金 V 领 + 金袖口条、红短袖灰前臂灰掌、白侧条红短裤、蓝袜黄鞋、张臂站位、大尾巴白尖；全曲面几何（椭球解析法线 + 车削胶囊/锥耳 + 圆角盒），白脸罩/金 V 领/球衣金侧条/球裤白侧条/深灰耳尖用逐三角着色焊在母体网格上不漂移；渲染矩阵 scratch 按骨架深度分层防兄弟节点互相踩踏；摄像头实机背景 + 单指拖动/双指缩放旋转/一键合影，不支持摄像头自动回退扫描演示）
 - 完整设计（站点地图、闭环、API、数据表、排期、风险）见 `ARCHITECTURE.md`
 
@@ -72,18 +77,10 @@ node docs/verify.js
 
 | 脚本 | 用途 |
 | --- | --- |
-| `verify.js` | 全站逻辑级自检（309 项：编译/运行/引用/结构/PWA/og/展览墙照片/WebAR），Node 直接跑 |
-| `runtime-audit.js` | 运行时体检：jsdom 真实加载 13 页抓错 + 游戏脚本编译/DOM id 核对 + 外链依赖扫描（需 `NODE_PATH` 指向 jsdom） |
-| `ar-e2e.js` / `ar-e2e2.js` | WebAR 实机回归（CDP + 假摄像头）：摄像头开启/WebGL 渲染/手势/合影导出/兜底切换全链路 |
-| `wolf-diag.html` | 小狼模型诊断页：正面 / 3/4 / 侧面 / 面部特写 / 全身广角五视角渲染，调骨架比例时用（浏览器直开或经 http 服务） |
-| `make-og-image.py` | 重新生成分享卡图 `assets/img/og-image.jpg` |
-| `convert-player-photos.py` | 把生成的球员肖像 PNG 批量转正（居中裁 3:4 / 限宽 900 / JPEG 质量 85，按拼音落盘） |
-| `rebrand-colors.py` | 全站品牌色批量替换（换配色时改好色板表重跑即可） |
-| `inject-og.py` |  og/twitter 元数据批量注入（幂等，新增页面后可重跑） |
-| `localize-linkgame-thumbs.py` | 游戏教学视频的 B 站外链缩略图一键本地化（下载→裁 480 宽→落 `<游戏>/img/`） |
-| `prepare-player-photos.py` | 球员真人照片一键裁切转正（见上节） |
-| `cutout-mascot.py` | 从官方海报抠取透明底苏小狼（旧版，红框海报专用） |
-| `remake-mascot-assets.py` | 用官方立版新图重制 `mascot.jpg` / `mascot-cutout.png|webp`：白键抠像 + 边界 BFS 连通性判定（白胸毛与背景同色，纯阈值会抠穿），产出前自检四角全透 / 各身体部位不透明 |
+| `verify.js` | 全站自检（329 项）：13 页结构 / 本地引用可达 / CSS 资源 / SW 预缓存 / manifest / `edgeone.json` / 游戏与回传桥对应 / JS 语法，零依赖直接跑 |
+| `bridge-test.js` | 分数回传桥回归测试（11 项）：开局菜单不误判为赛季结算、顶层页不自我 postMessage、嵌入时仍向父窗口广播一次 |
+
+> 早期开发用过的运行时体检（jsdom 抓错）、WebAR 实机 E2E（CDP + 假摄像头）与 Python 图片处理脚本未随仓库发布；当前可复跑的验证入口以上面两个脚本为准。
 
 ## 目录
 
@@ -92,10 +89,41 @@ wolf-ip-site/
 ├── *.html            # 13 个页面（7 模块 + play/missions/shop/profile/admin/404）
 ├── assets/           # css / js / img（徽标、吉祥物、图标、分享卡图、球员照片槽位）
 ├── games/            # 4 款游戏最终版
-├── server/           # 后端骨架（13 个 API 端点）
+├── edgeone.json      # EdgeOne Makers 部署配置（输出目录 / 缓存头 / 安全头）
+├── server/           # 后端骨架（14 个 API 端点）
 ├── miniprogram/      # 小程序壳接入说明（正式版开发规范）
-├── docs/             # 架构外的工具脚本与验证器
+├── docs/             # 自检与回归脚本（verify.js / bridge-test.js）
 └── ARCHITECTURE.md   # 架构设计文档 v2.1
 ```
 
 > 演示数据说明：赛事中心、球员展厅、周榜为演示设定；个人中心数据保存在本地浏览器 localStorage。
+
+## 部署（EdgeOne Makers，纯静态）
+
+站点没有构建步骤，仓库根目录已带 `edgeone.json`，可直接托管：
+
+1. Makers 新建项目 → 导入 Git 仓库 `keaidang/wolf-ip-site`（分支 `main`）
+2. 构建命令留空，**输出目录填 `.`**
+3. 部署后核对：
+   - 访问不存在的路径 → 返回站点自己的 `404.html`（Makers 自动识别输出根目录的 404.html，无需 rewrite）
+   - `/sw.js` → `Cache-Control: no-cache, no-store, must-revalidate`（`edgeone.json` 已声明）
+   - `/assets/img/*` 30 天、`/assets/*` 1 小时、HTML 协商缓存
+4. 若更新后仍看到旧页面：DevTools → Application → Service Workers → Unregister（SW 版本已 bump 到 `wolf-v13`）
+
+`edgeone.json` 只做静态层配置，不需要 Functions；若要真防刷，把 `server/server.js` 里的 `/api/game/score`、`/api/checkin`、`/api/shop/draw` 按同形接口迁到 Makers Functions + KV 即可，前端调用点无需改动。
+
+## 已知限制（演示期）
+
+- **积分/任务/盲盒都在 localStorage**：`wolfStore.v1` 可被手动修改，前端校验只能防误操作，不能防刷；正式版需服务端持有积分真相
+- **后台口令是前端常量**（`admin.html` 内的 `wolf2026`，提示文案亦可见）：纯静态站无法安全鉴权，答辩演示可用，正式上线需换服务端登录态
+- **静态直传会把 `server/`、`miniprogram/` 一并发布**：只含骨架代码与文档，无密钥；需要精简时给 Makers 单独配置输出目录
+- 赛事、球员、周榜为演示数据；AR 页使用程序化建模（不依赖任何外部模型文件）
+
+## 2026-10 修复记录
+
+- **积分翻倍**：顶层打开 `play.html` 时 `parent === window`，`bridge.js` 把 `wolf:score` 投给自己，又被页面兜底监听器处理一次 → 改为仅在被嵌入时向父窗口广播，并在 `play.html` 对 2.5 秒内的同签名投递去重
+- **狼之棋阵“空手 +6”**：开局菜单文案含“登顶冠军棋阵”被 `/淘汰|冠军/` 判真，且 `pStage` 初值 `1-1` 折 6 分 → 结算判定改为锚定结算弹窗独有的 `#btnAgain`
+- **删除死资源**：`assets/models/wolf.glb`（5.4 MB，占全站体积 46%）全站无引用（AR 页固定 `badge:true` 走程序化建模），已从仓库移除，历史仍可在首个提交中找回
+- **CORS 预检**：`server.js` 补齐 `PUT/DELETE` 与 `x-admin-token`，后台改/删资讯不再被预检拦截
+- **部署配置**：新增 `edgeone.json`；SW 版本 `wolf-v12` → `wolf-v13`
+- **验证入口**：重建 `docs/verify.js`（329 项）与 `docs/bridge-test.js`（11 项），替代已缺失的旧脚本

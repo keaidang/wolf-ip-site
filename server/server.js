@@ -258,8 +258,8 @@ const server = http.createServer((req, res) => {
 
   /* CORS（演示期放开，正式版收域名白名单） */
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-admin-token');
   if(req.method === 'OPTIONS'){ res.writeHead(204); res.end(); return; }
 
   const isAdmin = u.pathname.startsWith('/api/admin/');
