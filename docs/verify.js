@@ -136,7 +136,9 @@ for (const page of PAGES) {
   let cfg = null;
   try { cfg = JSON.parse(read('edgeone.json')); ok(); } catch (e) { bad('edgeone.json 是合法 JSON', e.message); }
   if (cfg) {
-    check('edgeone.json 输出目录为 .', cfg.outputDirectory === '.', String(cfg.outputDirectory));
+    check('edgeone.json 输出目录为 dist', cfg.outputDirectory === 'dist', String(cfg.outputDirectory));
+    check('edgeone.json 构建命令调用 tools/stage.js',
+      typeof cfg.buildCommand === 'string' && /tools\/stage\.js/.test(cfg.buildCommand), String(cfg.buildCommand));
     const rules = Array.isArray(cfg.headers) ? cfg.headers : [];
     check('edgeone.json 声明 headers 规则', rules.length > 0);
     const swRule = rules.find(r => r.source === '/sw.js');

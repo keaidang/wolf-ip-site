@@ -73,12 +73,13 @@ node docs/bridge-test.js
 - **AR 双轨**：小程序 AR 主轨（见 `miniprogram/README.md`，正式版按规范落地）+ 网页版 WebAR 实机轨（`assets/js/ar-webgl.js` 手写 WebGL 零依赖渲染：按官方立版还原的 Q 版苏小狼——大圆头灰毛、白脸罩、怒眉大眼高光、金 V 领 + 金袖口条、红短袖灰前臂灰掌、白侧条红短裤、蓝袜黄鞋、张臂站位、大尾巴白尖；全曲面几何（椭球解析法线 + 车削胶囊/锥耳 + 圆角盒），白脸罩/金 V 领/球衣金侧条/球裤白侧条/深灰耳尖用逐三角着色焊在母体网格上不漂移；渲染矩阵 scratch 按骨架深度分层防兄弟节点互相踩踏；摄像头实机背景 + 单指拖动/双指缩放旋转/一键合影，不支持摄像头自动回退扫描演示）
 - 完整设计（站点地图、闭环、API、数据表、排期、风险）见 `ARCHITECTURE.md`
 
-## 工具脚本（docs/）
+## 工具脚本（docs/ 与 tools/）
 
 | 脚本 | 用途 |
 | --- | --- |
-| `verify.js` | 全站自检（329 项）：13 页结构 / 本地引用可达 / CSS 资源 / SW 预缓存 / manifest / `edgeone.json` / 游戏与回传桥对应 / JS 语法，零依赖直接跑 |
-| `bridge-test.js` | 分数回传桥回归测试（11 项）：开局菜单不误判为赛季结算、顶层页不自我 postMessage、嵌入时仍向父窗口广播一次 |
+| `docs/verify.js` | 全站自检（330 项）：13 页结构 / 本地引用可达 / CSS 资源 / SW 预缓存 / manifest / `edgeone.json` / 游戏与回传桥对应 / JS 语法，零依赖直接跑 |
+| `docs/bridge-test.js` | 分数回传桥回归测试（11 项）：开局菜单不误判为赛季结算、顶层页不自我 postMessage、嵌入时仍向父窗口广播一次 |
+| `tools/stage.js` | 发布打包：把纯站点文件拷进 `dist/`（排除 `server/`、`miniprogram/`、`docs/`、架构图），Makers 构建输出即此目录 |
 
 > 早期开发用过的运行时体检（jsdom 抓错）、WebAR 实机 E2E（CDP + 假摄像头）与 Python 图片处理脚本未随仓库发布；当前可复跑的验证入口以上面两个脚本为准。
 
@@ -89,7 +90,8 @@ wolf-ip-site/
 ├── *.html            # 13 个页面（7 模块 + play/missions/shop/profile/admin/404）
 ├── assets/           # css / js / img（徽标、吉祥物、图标、分享卡图、球员照片槽位）
 ├── games/            # 4 款游戏最终版
-├── edgeone.json      # EdgeOne Makers 部署配置（输出目录 / 缓存头 / 安全头）
+├── edgeone.json      # EdgeOne Makers 部署配置（构建命令 / 输出目录 / 缓存头 / 安全头）
+├── tools/stage.js    # 发布打包：只把站点文件拷进 dist/（后端骨架与文档不发布）
 ├── server/           # 后端骨架（14 个 API 端点）
 ├── miniprogram/      # 小程序壳接入说明（正式版开发规范）
 ├── docs/             # 自检与回归脚本（verify.js / bridge-test.js）
@@ -100,15 +102,40 @@ wolf-ip-site/
 
 ## 部署（EdgeOne Makers，纯静态）
 
-站点没有构建步骤，仓库根目录已带 `edgeone.json`，可直接托管：
+站点无框架、无 npm 依赖，`edgeone.json` 已声明构建命令与输出目录，两种方式都可用。
 
-1. Makers 新建项目 → 导入 Git 仓库 `keaidang/wolf-ip-site`（分支 `main`）
-2. 构建命令留空，**输出目录填 `.`**
-3. 部署后核对：
-   - 访问不存在的路径 → 返回站点自己的 `404.html`（Makers 自动识别输出根目录的 404.html，无需 rewrite）
-   - `/sw.js` → `Cache-Control: no-cache, no-store, must-revalidate`（`edgeone.json` 已声明）
-   - `/assets/img/*` 30 天、`/assets/*` 1 小时、HTML 协商缓存
-4. 若更新后仍看到旧页面：DevTools → Application → Service Workers → Unregister（SW 版本已 bump 到 `wolf-v13`）
+### 方式 A：Git 导入（推荐，push 即自动部署）
+
+Makers 新建项目 → 导入 Git 仓库 `keaidang/wolf-ip-site`（分支 `main`），构建配置按下面填：
+
+| 配置项 | 填写 |
+| --- | --- |
+| 预设框架 | `Other` |
+| 根目录 | `./` |
+| 构建命令 | `node tools/stage.js` |
+| 安装命令 | **留空**（没有依赖，不要填 `npm install`） |
+| 构建输出目录 | `dist` |
+
+> 这些值 `edgeone.json` 里也写了（`buildCommand` / `outputDirectory`），控制台留空时会以配置文件为准；但界面必填项按上表填，避免歧义。打包结果 95 个文件 / 5.72 MB。
+
+### 方式 B：CLI / 控制台直传
+
+```bash
+node tools/stage.js                     # 生成 dist/
+edgeone makers deploy dist -n wolf-ip-site -e production --area global
+```
+
+控制台「直接上传」则把 `dist/` 内的**内容**打成 zip 上传（`index.html` 必须在 zip 根目录；上限 20000 文件、单文件 25 MB）。
+
+> 一个项目只能用一种来源：CLI/控制台直传建的项目，不能再改成 Git 导入。
+
+### 部署后核对
+
+1. 访问不存在的路径 → 返回站点自己的 `404.html`（Makers 自动识别输出根目录的 404.html，无需 rewrite）
+2. `/sw.js` → `Cache-Control: no-cache, no-store, must-revalidate`（`edgeone.json` 已声明）
+3. `/assets/img/*` 30 天、`/assets/*` 1 小时、HTML 协商缓存
+4. `/server/server.js`、`/docs/verify.js` 应返回 404（`tools/stage.js` 已把它们排除在发布物之外）
+5. 若更新后仍看到旧页面：DevTools → Application → Service Workers → Unregister（SW 版本已 bump 到 `wolf-v13`）
 
 `edgeone.json` 只做静态层配置，不需要 Functions；若要真防刷，把 `server/server.js` 里的 `/api/game/score`、`/api/checkin`、`/api/shop/draw` 按同形接口迁到 Makers Functions + KV 即可，前端调用点无需改动。
 
@@ -116,7 +143,7 @@ wolf-ip-site/
 
 - **积分/任务/盲盒都在 localStorage**：`wolfStore.v1` 可被手动修改，前端校验只能防误操作，不能防刷；正式版需服务端持有积分真相
 - **后台口令是前端常量**（`admin.html` 内的 `wolf2026`，提示文案亦可见）：纯静态站无法安全鉴权，答辩演示可用，正式上线需换服务端登录态
-- **静态直传会把 `server/`、`miniprogram/` 一并发布**：只含骨架代码与文档，无密钥；需要精简时给 Makers 单独配置输出目录
+- **发布物已收窄**：`tools/stage.js` 只把 13 页 + `assets/` + `games/` + PWA 文件拷进 `dist/`，`server/`、`miniprogram/`、`docs/`、架构图不会进公网（`verify.js` 会断言配置一致）
 - 赛事、球员、周榜为演示数据；AR 页使用程序化建模（不依赖任何外部模型文件）
 
 ## 2026-10 修复记录
