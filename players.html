@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>球员展厅 · 南通小狼队阵容 - 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="球员展厅 · 南通小狼队阵容">
+<meta property="og:description" content="南通小狼队球员展厅：阵容名单、位置数据、代表赛季与球员故事。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="球员展厅 · 南通小狼队阵容">
+<meta name="twitter:description" content="南通小狼队球员展厅：阵容名单、位置数据、代表赛季与球员故事。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / 球员展厅</div>
+    <h1>球员展厅</h1>
+    <p>南通小狼队 2026 赛季一线队名单。点开任意画框，看数据、听语录、认绝技。（球员信息为演示设定）</p>
+  </div>
+</div>
+
+<!-- 策展人手记 -->
+<section style="padding:40px 0 8px">
+  <div class="container">
+    <div class="gallery-intro">
+      <span class="vlabel">策展人手记</span>
+      <p>这支球队的故事，从来不只写在积分榜上。一号展厅收录 2026 赛季一线队十位球员——门将的出击、后卫的头顶、前锋的脚尖，<em>每一张面孔都是一种踢法</em>。走近任意一幅画框，展开他的数据、语录与绝技；十幅写实肖像已全部上墙，这里就是他们真正的肖像墙。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 展览墙大厅 -->
+<section class="gallery-hall">
+  <div class="container">
+    <div class="hall-head">
+      <span class="hh-en">EXHIBITION HALL · NO.1</span>
+      <h2>一号展厅 · 2026 赛季阵容</h2>
+      <p>十位球员，十种颜色。按位置分区观展，或直接点击画框展开完整档案。</p>
+    </div>
+    <div class="chips" id="posChips">
+      <button class="chip on" data-pos="all">全部</button>
+      <button class="chip" data-pos="FW">前锋</button>
+      <button class="chip" data-pos="MF">中场</button>
+      <button class="chip" data-pos="DF">后卫</button>
+      <button class="chip" data-pos="GK">门将</button>
+    </div>
+    <div class="gallery-wall" id="playerGrid"></div>
+    <div class="ph-note">
+      <span class="ic">🖼️</span>
+      <div><b>更换真人照片：</b>把新照片文件放进站点目录 <code>assets/img/players/</code>，按花名册拼音命名（如 1 号门将顾天驰 → <code>gu-tianchi.jpg</code>，竖版 3:4 最佳），刷新本页即自动替换，无需改代码。原始照片也可放入 <code>assets/img/players-raw/</code> 后运行 <code>docs/prepare-player-photos.py</code> 一键裁切转正。当前上墙的十幅肖像为 AI 生成的演示素材，正式上线前请替换为已获授权的球员照片。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 球员详情 · 画廊鉴赏弹窗 -->
+<div class="gal-mask" id="pModal"><div class="gal-box" id="galBox"></div></div>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, $$ } = window.Wolf;
+
+/* ---------- 阵容数据（演示设定） ---------- */
+const PLAYERS = [
+  { no:1,  name:'顾天驰', en:'GU TIANCHI', pos:'GK', posName:'门将', age:26, h:188, foot:'右脚', apps:8,  goals:0, ast:1,
+    quote:'球门在我身后，但我心里装着整条防线。', color:'#0e5f55', skill:'门线反应 · 指挥防区',
+    stats:{反应:96,出击:88,手抛球:74,指挥:90,稳定性:92} },
+  { no:2,  name:'陆铁牛', en:'LU TIENIU', pos:'DF', posName:'中后卫', age:24, h:183, foot:'右脚', apps:8, goals:5, ast:1,
+    quote:'别从我这一侧过，我撞人比球狠。', color:'#33518e', skill:'正面防守 · 头球解围',
+    stats:{防守:94,速度:81,头球:86,出球:72,意志:95} },
+  { no:7,  name:'周野',   en:'ZHOU YE',   pos:'FW', posName:'边锋', age:22, h:176, foot:'左脚', apps:8, goals:7, ast:3,
+    quote:'给我一步空间，我还你一记世界波。', color:'#c9962e', skill:'内切射门 · 持球突破',
+    stats:{射门:93,速度:95,盘带:91,传球:80,灵气:94} },
+  { no:10, name:'陈骁',   en:'CHEN XIAO', pos:'MF', posName:'前腰', age:25, h:178, foot:'右脚', apps:8, goals:3, ast:5,
+    quote:'我传的不是球，是别人没想到的路线。', color:'#0e5f55', skill:'致命一传 · 任意球',
+    stats:{传球:96,视野:95,定位球:88,盘带:84,跑动:82} },
+  { no:5,  name:'吴大梁', en:'WU DALIANG', pos:'DF', posName:'中后卫', age:29, h:190, foot:'右脚', apps:7, goals:2, ast:0,
+    quote:'角球进攻时，请把球往我头上扔。', color:'#33518e', skill:'制空权 · 卡位',
+    stats:{防守:90,速度:70,头球:95,出球:75,经验:91} },
+  { no:11, name:'林一鸣', en:'LIN YIMING', pos:'FW', posName:'影锋', age:21, h:174, foot:'右脚', apps:5, goals:1, ast:2,
+    quote:'替补上场？正好，我热身早做完了。', color:'#c9962e', skill:'穿插跑位 · 抢点',
+    stats:{射门:84,速度:88,盘带:86,无球:89,活力:93} },
+  { no:22, name:'赵不出', en:'ZHAO BUCHU', pos:'MF', posName:'后腰', age:23, h:180, foot:'右脚', apps:8, goals:0, ast:2,
+    quote:'我名字叫不出，抢断可从不缺席。', color:'#0e5f55', skill:'中场屏障 · 由守转攻',
+    stats:{防守:89,传球:90,拦截:92,覆盖:91,纪律:88} },
+  { no:30, name:'孙板凳', en:'SUN BANDENG', pos:'GK', posName:'门将', age:19, h:185, foot:'右脚', apps:0, goals:0, ast:0,
+    quote:'坐板凳也是学习，教练我记笔记了。', color:'#33518e', skill:'青训梯队 · 下一任门神',
+    stats:{反应:82,出击:75,手抛球:80,意志:86,潜力:95} },
+  { no:6,  name:'郑海峰', en:'ZHENG HAIFENG', pos:'DF', posName:'边后卫', age:27, h:182, foot:'右脚', apps:8, goals:0, ast:3,
+    quote:'一条边路上下跑十趟，这就是我的打卡。', color:'#c9962e', skill:'边路往返 · 套上传中',
+    stats:{防守:86,速度:90,体能:96,传中:83,硬度:89} },
+  { no:9,  name:'何嘉奖', en:'HE JIAJIANG', pos:'FW', posName:'中锋', age:24, h:179, foot:'右脚', apps:6, goals:2, ast:1,
+    quote:'进球荒？我把每一脚射门当最后一脚踢。', color:'#0e5f55', skill:'支点策应 · 禁区嗅觉',
+    stats:{射门:88,背身:84,头球:82,跑位:87,抗压:86} }
+];
+
+/* ---------- 照片槽位约定：assets/img/players/<拼音>.jpg ---------- */
+const photoPath = p => 'assets/img/players/' + p.en.toLowerCase().replace(/\s+/g, '-') + '.jpg';
+
+/* ---------- 剪影展签（真人照片未上墙时的展厅 art） ---------- */
+function silhouette(p){
+  const g = 'sg' + p.no;
+  return '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+    '<defs><linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="' + p.color + '" stop-opacity=".55"/>' +
+      '<stop offset="1" stop-color="' + p.color + '" stop-opacity=".07"/>' +
+    '</linearGradient></defs>' +
+    '<rect width="300" height="400" fill="#0a1224"/>' +
+    '<circle cx="150" cy="150" r="63" fill="url(#' + g + ')"/>' +
+    '<path d="M34 400 Q54 266 150 238 Q246 266 266 400 Z" fill="url(#' + g + ')"/>' +
+    '<text x="150" y="356" font-size="116" font-style="italic" font-weight="800" text-anchor="middle" fill="rgba(216,188,127,.16)">' + p.no + '</text>' +
+    '<rect x="1" y="1" width="298" height="398" fill="none" stroke="rgba(216,188,127,.16)" stroke-width="2"/>' +
+  '</svg>';
+}
+
+/* ---------- 照片挂载：存在则淡入覆盖剪影，不存在则保留展签 ---------- */
+function wirePhoto(portrait, p){
+  const img = portrait.querySelector('img');
+  if(!img) return;
+  const ready = () => { img.classList.add('ready'); portrait.classList.add('has-photo'); };
+  if(img.complete && img.naturalWidth > 0) ready();
+  else{
+    img.addEventListener('load', ready);
+    img.addEventListener('error', () => img.remove());
+  }
+}
+
+/* ---------- 渲染展览墙 ---------- */
+const grid = $('#playerGrid');
+grid.innerHTML = PLAYERS.map((p, i) =>
+  '<div class="exh-frame" data-i="' + i + '" data-pos="' + p.pos + '" style="--c:' + p.color + ';--d:' + (i * 70) + 'ms" title="' + p.name + ' · ' + p.posName + '">' +
+    '<div class="exh-portrait">' +
+      silhouette(p) +
+      '<span class="ph-tag">剪影展签</span>' +
+      '<img alt="' + p.name + '" loading="lazy" src="' + photoPath(p) + '">' +
+    '</div>' +
+    '<div class="plaque">' +
+      '<span class="pno">' + p.no + '</span>' +
+      '<span class="ptxt"><span class="pname">' + p.name + '</span><span class="pen">' + p.en + '</span></span>' +
+      '<span class="ppos">' + p.posName + '</span>' +
+    '</div>' +
+  '</div>'
+).join('');
+$$('.exh-portrait').forEach(ph => wirePhoto(ph, PLAYERS[+ph.closest('.exh-frame').dataset.i]));
+
+/* ---------- 详情弹窗（画廊鉴赏视图） ---------- */
+const mask = $('#pModal'), galBox = $('#galBox');
+grid.addEventListener('click', e => {
+  const frame = e.target.closest('.exh-frame');
+  if(!frame) return;
+  const p = PLAYERS[+frame.dataset.i];
+  const kv = [
+    ['年龄', p.age + ' 岁'], ['身高', p.h + ' cm'], ['惯用脚', p.foot],
+    ['出场', p.apps + ' 场'], ['进球', p.goals + ' 个'], ['助攻', p.ast + ' 次']
+  ].map(([k, v]) => '<span class="k">' + k + '</span><span class="v">' + v + '</span>').join('');
+  const bars = Object.entries(p.stats).map(([k, v]) =>
+    '<div class="row"><span class="k">' + k + '</span><div class="bar"><i style="width:' + v + '%"></i></div><span class="v">' + v + '</span></div>'
+  ).join('');
+  galBox.innerHTML =
+    '<div class="gal-hero">' +
+      '<div class="g-portrait">' + silhouette(p) +
+        '<img alt="' + p.name + '" src="' + photoPath(p) + '">' +
+      '</div>' +
+      '<div class="g-info">' +
+        '<button class="gal-close" id="gClose" aria-label="关闭">✕</button>' +
+        '<div class="gal-no">' + p.no + '</div>' +
+        '<div class="gal-name">' + p.name + '</div>' +
+        '<div class="gal-en">' + p.en + '</div>' +
+        '<span class="gal-pos" style="--c:' + p.color + '">' + p.posName + ' · ' + p.no + ' 号</span>' +
+        '<div class="gal-quote">“' + p.quote + '”</div>' +
+        '<div class="gal-kv">' + kv + '</div>' +
+        '<div class="gal-bars">' + bars + '</div>' +
+        '<div class="gal-skill">招牌绝技 <b>' + p.skill + '</b></div>' +
+      '</div>' +
+    '</div>';
+  wirePhoto(galBox.querySelector('.g-portrait'), p);
+  $('#gClose').onclick = closeModal;
+  mask.classList.add('show');
+  document.body.style.overflow = 'hidden';
+});
+function closeModal(){ mask.classList.remove('show'); document.body.style.overflow = ''; }
+mask.addEventListener('click', e => { if(e.target === mask) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+/* ---------- 位置筛选（重播上墙动画） ---------- */
+const chips = $$('#posChips .chip'), frames = $$('.exh-frame');
+chips.forEach(ch => ch.addEventListener('click', () => {
+  chips.forEach(c => c.classList.remove('on'));
+  ch.classList.add('on');
+  const t = ch.dataset.pos;
+  frames.forEach(f => {
+    const show = t === 'all' || f.dataset.pos === t;
+    f.style.display = show ? '' : 'none';
+    if(show){ f.style.animation = 'none'; void f.offsetWidth; f.style.animation = ''; }
+  });
+}));
+})();
+</script>
+</body>
+</html>

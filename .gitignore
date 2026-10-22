@@ -1,0 +1,26 @@
+# 依赖与构建产物
+node_modules/
+dist/
+build/
+.output/
+
+# 本地运行数据（server 用 node:sqlite 生成的库文件）
+server/*.db
+server/*.db-journal
+server/*.sqlite
+server/*.sqlite3
+server/data/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+
+# 日志与临时文件
+*.log
+npm-debug.log*
+tmp/
+.cache/

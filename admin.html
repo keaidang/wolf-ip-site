@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 · 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="后台管理 · 小狼足球乐园">
+<meta property="og:description" content="小狼足球乐园后台管理：资讯、奖池与任务的配置入口。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="后台管理 · 小狼足球乐园">
+<meta name="twitter:description" content="小狼足球乐园后台管理：资讯、奖池与任务的配置入口。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<meta name="robots" content="noindex">
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+  .admin-top{
+    background:#0f172a;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:16px;
+    position:sticky;top:0;z-index:100;
+  }
+  .admin-top img{width:32px;height:32px}
+  .admin-top b{font-size:15.5px}
+  .admin-top .tag{font-size:11px;background:#c9962e;color:#3b2503;font-weight:700;padding:2px 10px;border-radius:99px}
+  .admin-top .back{margin-left:auto;font-size:13px;color:rgba(255,255,255,.75)}
+  .admin-top .back:hover{color:#fff}
+  .admin-body{max-width:1080px;margin:0 auto;padding:28px 24px 60px}
+  .gate{
+    max-width:380px;margin:80px auto;background:var(--card);border:1px solid var(--line);
+    border-radius:18px;padding:36px;text-align:center;box-shadow:var(--shadow);
+  }
+  .gate img{width:72px;margin:0 auto 16px}
+  .gate h1{font-size:20px;margin-bottom:6px}
+  .gate p{font-size:13px;color:var(--ink2);margin-bottom:20px}
+  .gate input{
+    width:100%;padding:11px 16px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:14px;margin-bottom:12px;text-align:center;letter-spacing:2px;font-family:inherit;
+  }
+  .gate input:focus{outline:none;border-color:var(--pitch)}
+  .gate .btn{width:100%}
+  .gate .tip{font-size:11.5px;color:var(--ink3);margin-top:14px}
+  .adm-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .adm-tab{
+    padding:9px 20px;border-radius:99px;font-size:14px;font-weight:600;
+    background:var(--card);border:1.5px solid var(--line);color:var(--ink2);
+  }
+  .adm-tab.on{background:var(--pitch);border-color:var(--pitch);color:#fff}
+  .adm-panel{display:none}
+  .adm-panel.on{display:block}
+  .adm-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+  .adm-bar .sp{flex:1}
+  .adm-form{
+    background:var(--card);border:1.5px dashed var(--line);border-radius:14px;padding:20px;margin-bottom:20px;
+    display:grid;grid-template-columns:150px 110px 1fr;gap:12px;
+  }
+  .adm-form input,.adm-form select{
+    padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:13.5px;font-family:inherit;width:100%;
+  }
+  .adm-form input:focus,.adm-form select:focus{outline:none;border-color:var(--pitch)}
+  .adm-form .full{grid-column:1/-1}
+  .adm-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card)}
+  .adm-table th{
+    text-align:left;padding:10px 12px;color:var(--ink3);font-weight:600;font-size:12.5px;
+    border-bottom:2px solid var(--line);white-space:nowrap;
+  }
+  .adm-table td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .adm-table tr:last-child td{border-bottom:none}
+  .adm-table .mini{
+    font-size:12px;padding:4px 12px;border-radius:99px;border:1.5px solid var(--line);
+    background:var(--card);color:var(--ink2);font-weight:600;
+  }
+  .adm-table .mini:hover{border-color:var(--red);color:var(--red)}
+  .adm-table .mini.save:hover{border-color:var(--pitch);color:var(--pitch)}
+  .adm-table input[type=number]{width:72px}
+  .adm-table input[type=text]{
+    padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;width:100%;
+  }
+  .kind-badge{font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap}
+  .kind-badge.fixture{background:var(--gold-soft);color:#b45309}
+  .kind-badge.result{background:#dcfce7;color:#15803d}
+  .kind-badge.news{background:var(--wolf-soft);color:var(--wolf-deep)}
+  .adm-note{font-size:12.5px;color:var(--ink3);margin-top:16px;line-height:1.8}
+  .weight-preview{font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<div class="admin-top">
+  <img src="assets/img/wolf.svg" alt="小狼">
+  <b>小狼足球乐园 · 后台管理</b>
+  <span class="tag">演示版</span>
+  <a class="back" href="index.html">← 返回站点</a>
+</div>
+
+<!-- ============ 门禁 ============ -->
+<div class="gate" id="gate">
+  <img src="assets/img/wolf.svg" alt="小狼">
+  <h1>管理员入口</h1>
+  <p>演示口令：<b>wolf2026</b>（正式版替换为微信/账号体系）</p>
+  <input type="password" id="gatePwd" placeholder="请输入管理口令" maxlength="32">
+  <button class="btn btn-primary" id="gateBtn">进 入</button>
+  <div class="tip">本页修改保存在本地浏览器，导出 JSON 可迁移到正式版后端。</div>
+</div>
+
+<!-- ============ 管理台 ============ -->
+<div class="admin-body" id="adminBody" style="display:none">
+  <div class="adm-tabs">
+    <button class="adm-tab on" data-tab="news">📰 资讯管理</button>
+    <button class="adm-tab" data-tab="pool">🎁 盲盒奖池</button>
+    <button class="adm-tab" data-tab="missions">📅 每日任务</button>
+    <div class="sp"></div>
+    <button class="adm-tab" id="btnExport">⬇ 导出配置</button>
+    <button class="adm-tab" id="btnImport">⬆ 导入配置</button>
+    <button class="adm-tab" id="btnReset">♻ 恢复默认</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+  </div>
+
+  <!-- 资讯 -->
+  <div class="adm-panel on" id="panel-news">
+    <div class="adm-bar">
+      <h3 style="font-size:17px">狼群快讯 / 赛程赛果</h3>
+      <span class="sp"></span>
+      <span style="font-size:12.5px;color:var(--ink3)">赛事中心「狼群快讯」区实时展示这里的条目</span>
+    </div>
+    <div class="adm-form" id="newsForm">
+      <input type="date" id="nfDate">
+      <select id="nfKind">
+        <option value="fixture">赛程</option>
+        <option value="result">赛果</option>
+        <option value="news">快讯</option>
+      </select>
+      <input type="text" id="nfTitle" placeholder="标题，如：第 9 轮 · 南通小狼 VS 江宁狼群">
+      <input type="text" id="nfSummary" class="full" placeholder="摘要，如：19:35 · 主场 · 南通体育会展中心体育场">
+      <div class="full" style="display:flex;gap:10px">
+        <button class="btn btn-primary btn-sm" id="nfAdd">＋ 添加条目</button>
+        <span style="font-size:12px;color:var(--ink3);align-self:center">点击表格里的「改」可回填编辑</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="adm-table">
+        <thead><tr><th style="width:110px">日期</th><th style="width:70px">类型</th><th>标题 / 摘要</th><th style="width:130px">操作</th></tr></thead>
+        <tbody id="newsTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 奖池 -->
+  <div class="adm-panel" id="panel-pool">
+    <div class="adm-bar">
+      <h3 style="font-size:17px">盲盒奖池</h3>
+      <span class="sp"></span>
+      <span style="font-size:12.5px;color:var(--ink3)">修改后即时生效于「盲盒兑换」页（下次打开页面时读取）</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="adm-table">
+        <thead><tr>
+          <th style="width:52px">图标</th><th>奖品名称</th><th style="width:90px">稀有度</th>
+          <th style="width:80px">形式</th><th style="width:110px">权重</th><th style="width:90px">概率</th><th style="width:120px">操作</th>
+        </tr></thead>
+        <tbody id="poolTbody"></tbody>
+      </table>
+    </div>
+    <div class="adm-bar" style="margin-top:16px">
+      <button class="btn btn-ghost btn-sm" id="poolAdd">＋ 添加奖品</button>
+      <span class="sp"></span>
+      <button class="btn btn-primary btn-sm" id="poolSave">保存奖池</button>
+    </div>
+    <p class="adm-note">权重即相对概率：如围巾权重 5、总权重 100，则抽中率 5%。正式版奖池由服务端 <code>/api/shop/draw</code> 定奖，前端只读。</p>
+  </div>
+
+  <!-- 任务 -->
+  <div class="adm-panel" id="panel-missions">
+    <div class="adm-bar">
+      <h3 style="font-size:17px">每日任务</h3>
+      <span class="sp"></span>
+      <span style="font-size:12.5px;color:var(--ink3)">关闭后对应任务不在「任务与积分」页展示</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="adm-table">
+        <thead><tr>
+          <th style="width:56px">启用</th><th style="width:52px">图标</th><th>任务名称</th>
+          <th style="width:150px">说明</th><th style="width:110px">积分</th><th style="width:90px">操作</th>
+        </tr></thead>
+        <tbody id="misTbody"></tbody>
+      </table>
+    </div>
+    <div class="adm-bar" style="margin-top:16px">
+      <span class="sp"></span>
+      <button class="btn btn-primary btn-sm" id="misSave">保存任务</button>
+    </div>
+    <p class="adm-note">「分享」与「AR 放置」的领奖动作由页面按钮触发，积分值与去重规则（每日 1 次）固定；游戏类任务由对局结算自动完成。</p>
+  </div>
+
+  <p class="adm-note">
+    ⚠️ 演示说明：本后台把配置写在浏览器 localStorage（key: <code>wolf.admin.v1</code>），<br>
+    正式版应改为调用后端 <code>/api/admin/news</code> 等接口（服务端已预留对应表与端点骨架）。
+  </p>
+</div>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/data.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, $$, toast } = window.Wolf;
+const D = window.WolfData;
+const PWD = 'wolf2026';
+
+/* ---------- 门禁 ---------- */
+const gate = $('#gate'), body = $('#adminBody');
+function unlock(){
+  gate.style.display = 'none';
+  body.style.display = '';
+  renderAll();
+}
+if(sessionStorage.getItem('wolf.admin.auth') === '1') unlock();
+$('#gateBtn').addEventListener('click', () => {
+  if($('#gatePwd').value === PWD){
+    sessionStorage.setItem('wolf.admin.auth', '1');
+    unlock();
+  }else{
+    toast('口令不对，再试试', '🔒');
+  }
+});
+$('#gatePwd').addEventListener('keydown', e => { if(e.key === 'Enter') $('#gateBtn').click(); });
+
+/* ---------- 页签 ---------- */
+$$('.adm-tab[data-tab]').forEach(t => t.addEventListener('click', () => {
+  $$('.adm-tab[data-tab]').forEach(x => x.classList.remove('on'));
+  $$('.adm-panel').forEach(p => p.classList.remove('on'));
+  t.classList.add('on');
+  $('#panel-' + t.dataset.tab).classList.add('on');
+}));
+
+/* ---------- 资讯 ---------- */
+let editingId = null;
+function renderNews(){
+  const list = D.getNews().slice().sort((a, b) => b.date.localeCompare(a.date));
+  $('#newsTbody').innerHTML = list.length ? list.map(n =>
+    '<tr><td class="num">' + n.date + '</td>' +
+    '<td><span class="kind-badge ' + n.kind + '">' + D.KIND_LABEL[n.kind] + '</span></td>' +
+    '<td><b>' + esc(n.title) + '</b><div style="font-size:12px;color:var(--ink2)">' + esc(n.summary || '') + '</div></td>' +
+    '<td><button class="mini" data-edit="' + n.id + '">改</button> <button class="mini" data-del="' + n.id + '">删</button></td></tr>'
+  ).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:28px">暂无条目，用上方表单添加</td></tr>';
+}
+$('#nfAdd').addEventListener('click', () => {
+  const date = $('#nfDate').value, kind = $('#nfKind').value;
+  const title = $('#nfTitle').value.trim(), summary = $('#nfSummary').value.trim();
+  if(!date || !title){ toast('日期和标题必填', '⚠️'); return; }
+  const list = D.getNews().slice();
+  if(editingId){
+    const i = list.findIndex(n => n.id === editingId);
+    if(i > -1) Object.assign(list[i], { date, kind, title, summary });
+    editingId = null;
+    $('#nfAdd').textContent = '＋ 添加条目';
+    toast('已保存修改', '✅');
+  }else{
+    list.push({ id:'n' + Date.now(), date, kind, title, summary });
+    toast('已添加：' + title, '✅');
+  }
+  D.setNews(list);
+  $('#nfTitle').value = ''; $('#nfSummary').value = '';
+  renderNews();
+});
+$('#newsTbody').addEventListener('click', e => {
+  const ed = e.target.dataset.edit, del = e.target.dataset.del;
+  if(ed){
+    const n = D.getNews().find(x => x.id === ed);
+    if(n){
+      editingId = ed;
+      $('#nfDate').value = n.date; $('#nfKind').value = n.kind;
+      $('#nfTitle').value = n.title; $('#nfSummary').value = n.summary || '';
+      $('#nfAdd').textContent = '✓ 保存修改';
+      toast('已回填，改完点保存', '📝');
+    }
+  }
+  if(del){
+    D.setNews(D.getNews().filter(x => x.id !== del));
+    renderNews();
+    toast('已删除', '🗑️');
+  }
+});
+
+/* ---------- 奖池 ---------- */
+let poolDraft = null;
+function renderPool(){
+  poolDraft = D.getPool().map(p => Object.assign({}, p));
+  const total = poolDraft.reduce((s, p) => s + (parseFloat(p.weight) || 0), 0) || 1;
+  $('#poolTbody').innerHTML = poolDraft.map((p, i) =>
+    '<tr data-i="' + i + '">' +
+      '<td style="font-size:22px;text-align:center">' + (p.ic || '🎁') + '</td>' +
+      '<td><input type="text" value="' + esc(p.name) + '" data-f="name"></td>' +
+      '<td><input type="text" value="' + esc(p.rarity) + '" data-f="rarity" style="width:100%"></td>' +
+      '<td><input type="text" value="' + esc(p.form) + '" data-f="form" style="width:100%"></td>' +
+      '<td><input type="number" min="0" step="1" value="' + (p.weight || 0) + '" data-f="weight"></td>' +
+      '<td class="weight-preview">' + ((p.weight || 0) / total * 100).toFixed(1) + '%</td>' +
+      '<td><button class="mini" data-pdel="' + i + '">删</button></td>' +
+    '</tr>'
+  ).join('');
+}
+$('#poolTbody').addEventListener('input', e => {
+  const tr = e.target.closest('tr'); if(!tr) return;
+  const i = +tr.dataset.i, f = e.target.dataset.f; if(!f) return;
+  poolDraft[i][f] = f === 'weight' ? parseFloat(e.target.value) || 0 : e.target.value;
+});
+$('#poolTbody').addEventListener('click', e => {
+  if(e.target.dataset.pdel !== undefined){
+    poolDraft.splice(+e.target.dataset.pdel, 1);
+    renderPool();
+  }
+});
+$('#poolAdd').addEventListener('click', () => {
+  poolDraft.push({ id:'p' + Date.now(), name:'新奖品', ic:'🎁', rarity:'普通', weight:10, form:'电子' });
+  renderPool();
+});
+$('#poolSave').addEventListener('click', () => {
+  if(!poolDraft.length){ toast('奖池不能为空', '⚠️'); return; }
+  if(poolDraft.some(p => !p.name.trim())){ toast('有奖品名称为空', '⚠️'); return; }
+  D.setPool(poolDraft);
+  toast('奖池已保存，共 ' + poolDraft.length + ' 款', '✅');
+});
+
+/* ---------- 任务 ---------- */
+let misDraft = null;
+function renderMissions(){
+  misDraft = D.getMissions().map(m => Object.assign({}, m));
+  $('#misTbody').innerHTML = misDraft.map((m, i) =>
+    '<tr data-i="' + i + '">' +
+      '<td style="text-align:center"><input type="checkbox" ' + (m.enabled ? 'checked' : '') + ' data-f="enabled"></td>' +
+      '<td style="font-size:22px;text-align:center">' + (m.ic || '📅') + '</td>' +
+      '<td><b>' + esc(m.name) + '</b></td>' +
+      '<td><input type="text" value="' + esc(m.desc || '') + '" data-f="desc" style="width:100%"></td>' +
+      '<td><input type="number" min="0" step="5" value="' + (m.pts || 0) + '" data-f="pts"></td>' +
+      '<td><button class="mini" data-mdel="' + i + '">删</button></td>' +
+    '</tr>'
+  ).join('');
+}
+$('#misTbody').addEventListener('change', e => {
+  const tr = e.target.closest('tr'); if(!tr) return;
+  const i = +tr.dataset.i, f = e.target.dataset.f; if(!f) return;
+  misDraft[i][f] = f === 'enabled' ? e.target.checked : (f === 'pts' ? parseInt(e.target.value, 10) || 0 : e.target.value);
+});
+$('#misTbody').addEventListener('click', e => {
+  if(e.target.dataset.mdel !== undefined){
+    misDraft.splice(+e.target.dataset.mdel, 1);
+    renderMissions();
+  }
+});
+$('#misSave').addEventListener('click', () => {
+  if(!misDraft.some(m => m.enabled)){ toast('至少保留一个启用的任务', '⚠️'); return; }
+  D.setMissions(misDraft);
+  toast('任务配置已保存', '✅');
+});
+
+/* ---------- 导入 / 导出 / 重置 ---------- */
+$('#btnExport').addEventListener('click', () => {
+  const cfg = {
+    exportedAt: new Date().toISOString(),
+    news: D.getNews(), pool: D.getPool(), missions: D.getMissions()
+  };
+  const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'wolf-admin-config.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('配置已导出', '⬇');
+});
+$('#btnImport').addEventListener('click', () => $('#importFile').click());
+$('#importFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const cfg = JSON.parse(r.result);
+      const o = {};
+      if(Array.isArray(cfg.news)) o.news = cfg.news;
+      if(Array.isArray(cfg.pool)) o.pool = cfg.pool;
+      if(Array.isArray(cfg.missions)) o.missions = cfg.missions;
+      localStorage.setItem(D.ADMIN_KEY, JSON.stringify(o));
+      renderAll();
+      toast('配置已导入', '⬆');
+    }catch(err){ toast('JSON 解析失败', '❌'); }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+});
+$('#btnReset').addEventListener('click', () => {
+  if(!confirm('恢复全部默认配置？你在后台做过的修改会清空。')) return;
+  D.resetAll();
+  renderAll();
+  toast('已恢复默认配置', '♻️');
+});
+
+/* ---------- 工具 ---------- */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+function renderAll(){ renderNews(); renderPool(); renderMissions(); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小狼足球乐园 · 四款游戏即点即玩 - 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="小狼足球乐园 · 四款游戏即点即玩">
+<meta property="og:description" content="四款足球主题网页游戏即点即玩：点球大战、盘带挑战、冠军之路与消消乐，玩着攒积分。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="小狼足球乐园 · 四款游戏即点即玩">
+<meta name="twitter:description" content="四款足球主题网页游戏即点即玩：点球大战、盘带挑战、冠军之路与消消乐，玩着攒积分。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / 小狼足球乐园</div>
+    <h1>小狼足球乐园</h1>
+    <p>四款原创足球网页游戏，覆盖技巧、进度、竞技、活跃四种玩家类型。手机电脑都能玩，每局结算自动折算积分。</p>
+  </div>
+</div>
+
+<!-- ============ 游戏矩阵 ============ -->
+<section>
+  <div class="container">
+    <div class="chips" id="tagChips">
+      <button class="chip on" data-tag="all">全部</button>
+      <button class="chip" data-tag="技巧型">技巧型</button>
+      <button class="chip" data-tag="进度型">进度型</button>
+      <button class="chip" data-tag="竞技型">竞技型</button>
+      <button class="chip" data-tag="活跃型">活跃型</button>
+    </div>
+    <div class="game-grid" id="gameGrid">
+      <a class="game-card" href="play.html?g=wolf-pass3d" data-tag="技巧型">
+        <div class="game-cover">
+          <img src="assets/img/covers/wolf-pass3d.jpg" alt="神笔球王">
+          <span class="tag">技巧型 · 3D</span>
+          <span class="pts">每球 ≈ 8 积分</span>
+        </div>
+        <div class="game-body">
+          <h3>神笔球王 <span class="en">MAGIC PASS KING</span></h3>
+          <p>在 3D 球场里用手指"画"出传球线和射门线路——线画到球门里就是射门。60 秒限时，进球 +8 秒，连击不断分数狂飙。</p>
+          <div class="skill-row"><span>线路预判</span><span>射门角度</span><span>连击节奏</span></div>
+          <div class="best-row" data-best="wolf-pass3d" data-unit="球"></div>
+          <div class="game-foot">
+            <span class="hot">🖱️ 鼠标/触屏画线 · 🎯 射门得分</span>
+            <span class="btn btn-primary btn-sm">开始游戏</span>
+          </div>
+        </div>
+      </a>
+      <a class="game-card" href="play.html?g=wolf-dribble" data-tag="进度型">
+        <div class="game-cover">
+          <img src="assets/img/covers/wolf-dribble.jpg" alt="狼之盘带">
+          <span class="tag">进度型 · 闯关</span>
+          <span class="pts">每 200 得分 ≈ 1 积分</span>
+        </div>
+        <div class="game-body">
+          <h3>狼之盘带 <span class="en">WOLF DRIBBLE</span></h3>
+          <p>带球闯关：面对不同类型的防守者，出对应的绝技——油炸丸子、马赛回旋、牛尾巴。过掉所有人冲进禁区，被断 3 次重来。</p>
+          <div class="skill-row"><span>绝技选择</span><span>节奏控制</span><span>闯关解锁</span></div>
+          <div class="best-row" data-best="wolf-dribble" data-unit="本关得分"></div>
+          <div class="game-foot">
+            <span class="hot">📈 关卡递进 · 🔓 解锁绝技</span>
+            <span class="btn btn-primary btn-sm">开始游戏</span>
+          </div>
+        </div>
+      </a>
+      <a class="game-card" href="play.html?g=wolf-tft" data-tag="竞技型">
+        <div class="game-cover">
+          <img src="assets/img/covers/wolf-tft.jpg" alt="狼之棋阵">
+          <span class="tag">竞技型 · 自走棋</span>
+          <span class="pts">每小关 ≈ 5 积分</span>
+        </div>
+        <div class="game-body">
+          <h3>狼之棋阵 <span class="en">WOLF AUTO CHESS</span></h3>
+          <p>足球明星自走棋：攒钱买人、合成升星、排兵布阵，八名球员自动开打。羁绊搭配、经济运营、临场调整，看你的狼群能走到哪一章。</p>
+          <div class="skill-row"><span>阵容羁绊</span><span>经济运营</span><span>排兵布阵</span></div>
+          <div class="best-row" data-best="wolf-tft" data-unit="关卡分"></div>
+          <div class="game-foot">
+            <span class="hot">♟️ 策略竞技 · 🏆 赛季结算</span>
+            <span class="btn btn-primary btn-sm">开始游戏</span>
+          </div>
+        </div>
+      </a>
+      <a class="game-card" href="play.html?g=football-linkgame" data-tag="活跃型">
+        <div class="game-cover">
+          <img src="assets/img/covers/football-linkgame.jpg" alt="绝技连连看">
+          <span class="tag">活跃型 · 消除</span>
+          <span class="pts">每 100 得分 ≈ 1 积分</span>
+        </div>
+        <div class="game-body">
+          <h3>绝技连连看 <span class="en">SKILL LINK</span></h3>
+          <p>足球动作连连看：点两张一样的牌即可连线消除，消一对就弹出这个动作的教学视频。通关 18 对，解锁 12 个绝技图鉴。</p>
+          <div class="skill-row"><span>观察记忆</span><span>图鉴收集</span><span>轻量休闲</span></div>
+          <div class="best-row" data-best="football-linkgame" data-unit="得分"></div>
+          <div class="game-foot">
+            <span class="hot">🧩 轻松上手 · 📚 动作图鉴</span>
+            <span class="btn btn-primary btn-sm">开始游戏</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 积分规则 ============ -->
+<section class="sec-alt-t">
+  <div class="container">
+    <div class="ar-layout" style="grid-template-columns:1fr .8fr">
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span><h3>乐园积分规则</h3><span class="sub">对局结算自动折算</span></div>
+        <table class="tbl">
+          <thead><tr><th>游戏</th><th>计分方式</th><th>单款日上限</th></tr></thead>
+          <tbody>
+            <tr><td>神笔球王</td><td>每球 8 积分，单场 5 球以上额外 +4</td><td class="num">20 积分</td></tr>
+            <tr><td>狼之盘带</td><td>每 200 本关得分 = 1 积分</td><td class="num">20 积分</td></tr>
+            <tr><td>狼之棋阵</td><td>每小关 5 积分（如 3-12 关 = 27 积分）</td><td class="num">20 积分</td></tr>
+            <tr><td>绝技连连看</td><td>每 100 得分 = 1 积分</td><td class="num">20 积分</td></tr>
+            <tr><td>每日签到</td><td>+10，连签 7 天起 +20</td><td class="num">每日 1 次</td></tr>
+            <tr><td>AR 体验</td><td>完成一次放置 +20</td><td class="num">20 积分</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span><h3>积分能干什么</h3></div>
+        <div class="mission-list">
+          <div class="mission-item"><div class="ic">🎁</div><div class="mi"><b>抽盲盒</b><span>50 积分/次，含实物奖品</span></div><span class="pts">-50</span></div>
+          <div class="mission-item"><div class="ic">🏅</div><div class="mi"><b>解锁徽章</b><span>里程碑成就自动点亮</span></div><span class="pts">免费</span></div>
+          <div class="mission-item"><div class="ic">📊</div><div class="mi"><b>冲周榜</b><span>每周积分前列上墙</span></div><span class="pts">免费</span></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn btn-primary btn-sm" href="missions.html">任务与积分</a>
+          <a class="btn btn-ghost btn-sm" href="shop.html">去抽盲盒</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, $$ } = window.Wolf;
+const chips = $$('#tagChips .chip');
+const cards = $$('#gameGrid .game-card');
+chips.forEach(ch => ch.addEventListener('click', () => {
+  chips.forEach(c => c.classList.remove('on'));
+  ch.classList.add('on');
+  const t = ch.dataset.tag;
+  cards.forEach(card => {
+    card.style.display = (t === 'all' || card.dataset.tag === t) ? '' : 'none';
+  });
+}));
+})();
+</script>
+</body>
+</html>

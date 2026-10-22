@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务与积分 · 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="任务与积分 · 小狼足球乐园">
+<meta property="og:description" content="任务与积分体系：每日签到、分享、游戏挑战任务，积分可抽盲盒周边。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="任务与积分 · 小狼足球乐园">
+<meta name="twitter:description" content="任务与积分体系：每日签到、分享、游戏挑战任务，积分可抽盲盒周边。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / 任务与积分</div>
+    <h1>任务与积分</h1>
+    <p>玩游戏真能攒积分，攒的积分真能换东西。每日任务、积分规则、防刷机制，全部公开透明。</p>
+  </div>
+</div>
+
+<!-- ============ 签到 + 今日概览 ============ -->
+<section>
+  <div class="container">
+    <div class="checkin-card">
+      <div class="big-pts">+10<i>积分/日</i></div>
+      <div class="info">
+        <b>每日签到</b>
+        <p id="checkinInfo">连续签到第 1 天起每天 +10；连满 7 天起升级为 +20。</p>
+      </div>
+      <button class="btn btn-gold" id="btnCheckin">📅 立即签到</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 每日任务 ============ -->
+<section style="padding-top:0">
+  <div class="container">
+    <div class="panel">
+      <div class="panel-title"><span class="dot"></span><h3>每日任务</h3><span class="sub">每天 0 点刷新</span></div>
+      <div class="mission-list" id="missionList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 积分规则 + 防刷 ============ -->
+<section style="padding-top:0">
+  <div class="container">
+    <div class="ar-layout" style="grid-template-columns:1.1fr .9fr">
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span><h3>积分规则</h3><span class="sub">游戏得分按率折算</span></div>
+        <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>行为</th><th>积分</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>每日签到</td><td class="num">+10</td><td>连签 7 天起 +20/日</td></tr>
+            <tr><td>神笔球王</td><td class="num">每球 +8</td><td>单场 5 球以上再 +4</td></tr>
+            <tr><td>狼之盘带</td><td class="num">每 200 得分 +1</td><td>按本关得分折算</td></tr>
+            <tr><td>狼之棋阵</td><td class="num">每小关 +5</td><td>3-12 关即 +27</td></tr>
+            <tr><td>绝技连连看</td><td class="num">每 100 得分 +1</td><td>通关后一次性结算</td></tr>
+            <tr><td>分享站点</td><td class="num">+5</td><td>每日 1 次</td></tr>
+            <tr><td>AR 放置体验</td><td class="num">+20</td><td>每日 1 次</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink3);margin-top:14px">四款游戏均有<b>单款每日 20 积分</b>上限，防止单款游戏刷穿整个经济系统。</p>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span><h3>防刷机制</h3></div>
+        <div class="mission-list">
+          <div class="mission-item"><div class="ic">🧮</div><div class="mi"><b>单款日上限</b><span>每款游戏每日最多 20 积分</span></div></div>
+          <div class="mission-item"><div class="ic">🔍</div><div class="mi"><b>后端验分</b><span>正式版由服务端校验对局时长与得分合理性，拦截异常对局</span></div></div>
+          <div class="mission-item"><div class="ic">⏱️</div><div class="mi"><b>对局时长过滤</b><span>过短的对局不计分（如连连看 10 秒通关直接丢弃）</span></div></div>
+          <div class="mission-item"><div class="ic">🧾</div><div class="mi"><b>流水可查</b><span>每笔积分增减在个人中心留痕，可追溯</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/data.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, $$, store, saveStore, addPoints, checkin, toast, today } = window.Wolf;
+const D = window.WolfData;
+
+/* ---- 签到 ---- */
+const btn = $('#btnCheckin');
+function refreshCheckin(){
+  const done = store.checkin.last === today();
+  btn.disabled = done;
+  btn.textContent = done ? '✓ 今日已签到' : '📅 立即签到';
+  $('#checkinInfo').textContent = done
+    ? '今天已签到（连续 ' + store.checkin.streak + ' 天）。明天继续，连满 7 天升级 +20/日。'
+    : '连续签到第 ' + (store.checkin.streak + 1) + ' 天 · 当前连签 ' + store.checkin.streak + ' 天。连满 7 天起 +20/日。';
+}
+btn.addEventListener('click', () => { checkin(); refreshCheckin(); });
+refreshCheckin();
+
+/* ---- 每日任务（后台配置驱动） ---- */
+const missions = D.getMissions().filter(m => m.enabled);
+function missionState(){
+  const d = today();
+  if(!store.dailyMission) store.dailyMission = {};
+  if(store.dailyMission[d] === undefined) store.dailyMission[d] = {};
+  return store.dailyMission[d];
+}
+function renderMissions(){
+  const st = missionState();
+  $('#missionList').innerHTML = missions.map(m => {
+    const done = !!st[m.key];
+    const btnHtml = m.share
+      ? '<button class="btn btn-sm ' + (done ? 'btn-ghost' : 'btn-primary') + '" data-k="' + m.key + '" ' + (done ? 'disabled' : '') + '>' + (done ? '✓ 已完成' : m.act) + '</button>'
+      : '<a class="btn btn-sm ' + (done ? 'btn-ghost' : 'btn-primary') + '" href="' + m.href + '">' + (done ? '✓ 已完成' : m.act) + '</a>';
+    return '<div class="mission-item">' +
+      '<div class="ic">' + m.ic + '</div>' +
+      '<div class="mi"><b>' + m.name + '</b><span>' + (m.desc2 || m.desc) + '</span></div>' +
+      '<span class="pts">' + (m.pts > 0 ? '+' + m.pts + ' 积分' : (m.desc2 || '')) + '</span>' +
+      btnHtml + '</div>';
+  }).join('');
+}
+$('#missionList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-k]');
+  if(!b) return;
+  const st = missionState();
+  if(b.dataset.k === 'share' && !st.share){
+    st.share = true; saveStore(store);
+    addPoints(5, 'share', '分享站点给好友');
+    renderMissions();
+  }
+});
+renderMissions();
+})();
+</script>
+</body>
+</html>

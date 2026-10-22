@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盲盒兑换 · 50 积分抽一次 - 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="盲盒兑换 · 50 积分抽一次">
+<meta property="og:description" content="盲盒兑换：50 积分抽一次，八款小狼周边等你收集。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="盲盒兑换 · 50 积分抽一次">
+<meta name="twitter:description" content="盲盒兑换：50 积分抽一次，八款小狼周边等你收集。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / 盲盒兑换</div>
+    <h1>盲盒兑换</h1>
+    <p>50 积分抽一次。电子周边当场到账，实物奖品记入账户后到线下赛事现场核销领取。</p>
+  </div>
+</div>
+
+<!-- ============ 抽奖 + 奖池 ============ -->
+<section>
+  <div class="container">
+    <div class="shop-layout">
+      <div class="box-stage">
+        <div class="box-art" id="boxArt" title="点击抽奖">
+          <svg viewBox="0 0 120 120" width="150" height="150">
+            <ellipse cx="60" cy="104" rx="34" ry="7" fill="rgba(0,0,0,.25)"/>
+            <path d="M22 52 Q60 40 98 52 L94 100 Q60 110 26 100 Z" fill="#c9962e"/>
+            <path d="M22 52 Q60 40 98 52 L60 62 Z" fill="#d9b45f"/>
+            <path d="M60 62 L52 40 Q60 34 68 40 Z" fill="#fde68a"/>
+            <circle cx="46" cy="78" r="5" fill="#fff7ed" opacity=".85"/>
+            <circle cx="74" cy="86" r="4" fill="#fff7ed" opacity=".85"/>
+            <text x="60" y="88" font-size="15" font-weight="800" text-anchor="middle" fill="#7c2d12">狼</text>
+          </svg>
+        </div>
+        <h3>小狼盲盒 · 第三弹</h3>
+        <p>本期主题：赛季高光。每次消耗 50 积分。</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-gold" id="btnDraw">🎁 抽一次（50 积分）</button>
+          <button class="btn btn-ghost btn-sm" id="btnDraw10" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)">十连抽（500 积分）</button>
+        </div>
+        <p style="margin-top:14px;font-size:12px;opacity:.75">当前积分：<b data-points style="font-size:15px">0</b></p>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-title"><span class="dot"></span><h3>本期奖池</h3><span class="sub" id="poolCount"></span></div>
+          <div style="overflow-x:auto">
+          <table class="tbl pool-table">
+            <thead><tr><th>奖品</th><th>稀有度</th><th>概率</th><th>形式</th></tr></thead>
+            <tbody id="poolTbody"></tbody>
+          </table>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-top:12px">实物奖品登记后，可在主场赛事现场"小狼服务站"核销领取；电子奖品在个人中心查看。奖池由后台配置驱动。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 兑换记录 ============ -->
+<section style="padding-top:0">
+  <div class="container">
+    <div class="panel">
+      <div class="panel-title"><span class="dot"></span><h3>我的兑换记录</h3><span class="sub" id="recCount"></span></div>
+      <div class="rec-list" id="recList"></div>
+    </div>
+  </div>
+</section>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/data.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, $$, store, saveStore, addPoints, grantBadge, toast } = window.Wolf;
+const D = window.WolfData;
+
+/* 奖池与权重以后台配置为准（localStorage 覆盖，默认见 data.js） */
+const POOL = D.getPool().map(p => ({ name:p.name, ic:p.ic, rarity:p.rarity, weight:+p.weight || 0, form:p.form }));
+const TOTAL = POOL.reduce((s, p) => s + p.weight, 0) || 1;
+const RARITY_CLASS = { '传说':'r1', '史诗':'r5' };
+
+/* 奖池表渲染 */
+(function renderPoolTable(){
+  $('#poolCount').textContent = '共 ' + POOL.length + ' 款 · 概率以后台配置为准';
+  $('#poolTbody').innerHTML = POOL.map(p =>
+    '<tr class="' + (RARITY_CLASS[p.rarity] || '') + '">' +
+      '<td>' + (p.ic || '🎁') + ' ' + p.name + '</td>' +
+      '<td>' + p.rarity + '</td>' +
+      '<td class="num">' + (p.weight / TOTAL * 100).toFixed(1) + '%</td>' +
+      '<td>' + p.form + '</td>' +
+    '</tr>'
+  ).join('');
+})();
+
+function drawOne(){
+  let r = Math.random() * TOTAL;
+  for(const p of POOL){ r -= p.weight; if(r <= 0) return p; }
+  return POOL[POOL.length - 1];
+}
+
+function renderRecs(){
+  const items = store.blindbox.items || [];
+  $('#recCount').textContent = '累计抽取 ' + store.blindbox.count + ' 次';
+  if(!items.length){
+    $('#recList').innerHTML = '<div class="empty-tip">还没有抽过奖——去左边点一下盲盒，欧气从此开始。</div>';
+    return;
+  }
+  $('#recList').innerHTML = items.slice().reverse().map(it =>
+    '<div class="rec-item ' + (RARITY_CLASS[it.rarity] || '') + '">' +
+      '<span class="ic">' + it.ic + '</span>' +
+      '<div class="ri"><b>' + it.name + '</b><span>' + it.rarity + ' · ' + it.form + '</span></div>' +
+      '<span class="tm">' + it.hm + '</span>' +
+    '</div>'
+  ).join('');
+}
+
+function doDraw(times){
+  const cost = 50 * times;
+  if(store.points < cost){ toast('积分不足，还差 ' + (cost - store.points) + ' 分', '😅'); return; }
+  addPoints(-cost, 'shop', '盲盒抽取 ×' + times);
+  const results = [];
+  for(let i = 0; i < times; i++){
+    const p = drawOne();
+    results.push(p);
+    store.blindbox.count++;
+    store.blindbox.items.push({ name:p.name, ic:p.ic, rarity:p.rarity, form:p.form, hm:new Date().toTimeString().slice(0,5) });
+  }
+  if(store.blindbox.items.length > 60) store.blindbox.items = store.blindbox.items.slice(-60);
+  saveStore(store);
+  renderRecs();
+
+  /* 展示结果 */
+  const best = results.reduce((a, b) => POOL.indexOf(b) < POOL.indexOf(a) ? b : a);
+  const box = $('#boxArt');
+  box.classList.add('shaking');
+  setTimeout(() => {
+    box.classList.remove('shaking');
+    toast('×' + times + ' 抽中：' + best.name + (best.rarity !== '—' ? '（' + best.rarity + '）' : ''), best.ic);
+    if(best.rarity === '传说' || best.rarity === '史诗') grantBadge('lucky');
+  }, 700);
+}
+
+$('#btnDraw').addEventListener('click', () => doDraw(1));
+$('#btnDraw10').addEventListener('click', () => doDraw(10));
+$('#boxArt').addEventListener('click', () => doDraw(1));
+renderRecs();
+})();
+</script>
+</body>
+</html>

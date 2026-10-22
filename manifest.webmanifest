@@ -1,0 +1,22 @@
+{
+  "name": "小狼足球乐园 · 南通苏超\"小狼\"足球 IP 交互系统",
+  "short_name": "小狼乐园",
+  "description": "围绕南通苏超\"小狼\"足球 IP 的 Web 游戏化站点：四款即开即玩的足球游戏、积分任务闭环、赛事中心与 AR 互动体验。",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d131f",
+  "theme_color": "#0e5f55",
+  "categories": ["games", "sports", "entertainment"],
+  "icons": [
+    { "src": "./assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "开始游戏", "url": "./games.html" },
+    { "name": "每日签到", "url": "./missions.html" },
+    { "name": "AR 放小狼", "url": "./ar.html" }
+  ]
+}

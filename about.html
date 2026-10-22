@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于我们 · 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="关于我们 · 小狼足球乐园">
+<meta property="og:description" content="关于小狼足球乐园：项目背景、设计理念、团队介绍与联系方式。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="关于我们 · 小狼足球乐园">
+<meta name="twitter:description" content="关于小狼足球乐园：项目背景、设计理念、团队介绍与联系方式。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / 关于我们</div>
+    <h1>关于我们</h1>
+    <p>一个毕业设计，一只狼，四款游戏，和一个想认真转起来的积分闭环。</p>
+  </div>
+</div>
+
+<!-- ============ 项目背景 ============ -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">BACKGROUND</div>
+      <h2>项目从哪来</h2>
+      <p>这是我们的毕业设计——《基于 Web 游戏化设计与 AR 拓展体验的南通苏超"小狼"足球 IP 交互系统设计与实现》。选题来自一个很具体的观察：身边看苏超的人越来越多，但"看完就走"——赛事内容消费完就散了，IP 没有留下可以反复把玩的东西。</p>
+      <p>我们的回答是：把球队 IP 做成一个能玩的系统。四款游戏承接"看球之外的时间"，积分闭环把一次性的访问变成持续的访问，AR 则给数字 IP 一个"摸得到"的实体接口。</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card"><div class="ic">🎮</div><b>四款自研游戏</b><p>零依赖单文件网页游戏，手机电脑即开即玩：3D 画线射门、盘带闯关、自走棋、动作连连看。</p></div>
+      <div class="tech-card"><div class="ic">🔁</div><b>积分任务闭环</b><p>签到、对局、分享、AR 四类获取路径，徽章、周榜、盲盒三类消耗出口，防刷规则内置。</p></div>
+      <div class="tech-card"><div class="ic">📦</div><b>双轨 AR</b><p>小程序 AR 做主体验，手写 WebGL 网页 WebAR（摄像头实机放置 + 手势 + 合影）做零门槛兜底，两轨共用一套积分规则。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 团队 ============ -->
+<section class="sec-alt">
+  <div class="container">
+    <div class="sec-head center">
+      <div class="kicker">TEAM</div>
+      <h2>三个人，一条狼</h2>
+      <p>从游戏、前后端到 IP 美术，三个人包下了全部——也包括给这只狼画第 41 版耳朵。</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar">
+          <svg viewBox="0 0 80 80" width="88" height="88">
+            <rect width="80" height="80" fill="#0e5f55"/>
+            <circle cx="40" cy="36" r="20" fill="#f5d0a9"/>
+            <path d="M20 80 Q22 58 40 54 Q58 58 60 80 Z" fill="#f8fafc"/>
+            <path d="M28 27 Q32 16 44 17 Q53 18 54 28 L50 23 Q44 20 33 23 Z" fill="#1f2937"/>
+            <circle cx="34" cy="36" r="2.4" fill="#0f172a"/><circle cx="46" cy="36" r="2.4" fill="#0f172a"/>
+            <path d="M36 44 Q40 47 44 44" stroke="#0f172a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>华程杰</h3>
+        <div class="role">项目负责 · 前后端</div>
+        <p>站点架构、积分闭环与后端 API 的设计者。信条：闭环转不起来，游戏做得再好也白搭。</p>
+      </div>
+      <div class="team-card">
+        <div class="avatar">
+          <svg viewBox="0 0 80 80" width="88" height="88">
+            <rect width="80" height="80" fill="#33518e"/>
+            <circle cx="40" cy="36" r="20" fill="#e8b88a"/>
+            <path d="M20 80 Q22 58 40 54 Q58 58 60 80 Z" fill="#f8fafc"/>
+            <path d="M26 28 L30 12 L36 22 L40 10 L46 22 L52 12 L54 28 Z" fill="#1f2937"/>
+            <circle cx="34" cy="36" r="2.4" fill="#0f172a"/><circle cx="46" cy="36" r="2.4" fill="#0f172a"/>
+            <path d="M36 44 Q40 48 44 44" stroke="#0f172a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>黄俊濠</h3>
+        <div class="role">游戏开发</div>
+        <p>四款游戏的主程。自研 3D 迷你渲染器、自走棋战斗结算、门将 AI 都出自他手，也是测试脚手石的作者。</p>
+      </div>
+      <div class="team-card">
+        <div class="avatar">
+          <svg viewBox="0 0 80 80" width="88" height="88">
+            <rect width="80" height="80" fill="#c9962e"/>
+            <circle cx="40" cy="36" r="20" fill="#d99a6c"/>
+            <path d="M20 80 Q22 58 40 54 Q58 58 60 80 Z" fill="#f8fafc"/>
+            <path d="M28 27 Q32 16 44 17 Q53 18 54 28 L50 23 Q44 20 33 23 Z" fill="#1f2937"/>
+            <circle cx="32" cy="13" r="6" fill="#1f2937"/>
+            <circle cx="34" cy="36" r="2.4" fill="#0f172a"/><circle cx="46" cy="36" r="2.4" fill="#0f172a"/>
+            <path d="M36 44 Q40 47 44 44" stroke="#0f172a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>王宇杰</h3>
+        <div class="role">IP 美术 · AR</div>
+        <p>苏小狼的亲爹：从 41 版耳朵里挑出最终版，定下整套色板，并完成 AR 3D 模型与小程序接入。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 技术架构 ============ -->
+<section id="tech">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">TECH</div>
+      <h2>技术架构速览</h2>
+      <p>原则就一条：能静态就不动态，能零依赖就不引库。完整架构文档见项目目录下的 ARCHITECTURE.md。</p>
+    </div>
+    <div class="tech-grid g4">
+      <div class="tech-card"><div class="ic">🌐</div><b>前端 · 静态多页</b><p>无构建、无框架，原生 HTML/CSS/JS。<code>iframe</code><code>postMessage</code> 把四款单文件游戏原样嵌入并回传分数。</p></div>
+      <div class="tech-card"><div class="ic">⚙️</div><b>后端 · Node 轻服务</b><p>Node 22 原生 <code>node:http</code> + <code>node:sqlite</code>，零 npm 依赖；负责积分验分、盲盒发放、资讯管理。<code>server/</code> 目录含 13 个 API 骨架。</p></div>
+      <div class="tech-card"><div class="ic">📱</div><b>小程序 · AR 主轨</b><p>微信小程序 AR 能力 + 低模 3D 小狼（面数 &lt; 8K），分享链路最短。<code>miniprogram/</code> 目录有接入说明。</p></div>
+      <div class="tech-card"><div class="ic">🧩</div><b>PWA + 配置化</b><p>可添加到主屏幕、游戏离线可玩；资讯/奖池/任务后台在线配置，深色模式与 PC/手机全端兼容。</p></div>
+    </div>
+    <div class="sec-more" style="text-align:left;margin-top:24px">
+      <p style="font-size:13.5px;color:var(--ink2)">👉 站点导航、积分闭环、API 清单、数据表设计与四周排期，都写在 <b>wolf-ip-site/ARCHITECTURE.md</b> 里。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 联系我们 ============ -->
+<section id="contact" class="sec-alt-t">
+  <div class="container">
+    <div class="loop-wrap" style="text-align:center;padding:44px 32px">
+      <h2 style="position:relative">来主场看球，顺便找我们要周边</h2>
+      <p style="position:relative;margin:12px auto 24px;max-width:520px;color:rgba(255,255,255,.85)">项目合作、IP 授权、或者只是想聊聊那记绝平球——都欢迎。演示站点数据保存在本地浏览器，正式版持续打磨中。</p>
+      <div style="position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn btn-gold" href="games.html">🎮 先去玩一局</a>
+        <a class="btn btn-ghost" href="index.html" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)">回到首页</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

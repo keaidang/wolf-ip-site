@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人中心 · 积分与徽章 - 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="个人中心 · 积分与徽章">
+<meta property="og:description" content="个人中心：查看积分余额、积分流水、徽章墙与各游戏最高分记录。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="个人中心 · 积分与徽章">
+<meta name="twitter:description" content="个人中心：查看积分余额、积分流水、徽章墙与各游戏最高分记录。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / 个人中心</div>
+    <h1>个人中心</h1>
+    <p>你的积分、徽章、流水和周榜成绩。本地演示版数据保存在浏览器里，正式版将绑定微信登录同步到云端。</p>
+  </div>
+</div>
+
+<section style="padding-top:44px">
+  <div class="container">
+    <div class="profile-layout">
+      <!-- 左：身份卡 + 周榜 -->
+      <div>
+        <div class="me-card">
+          <div class="avatar"><img src="assets/img/mascot-cutout.webp" alt="avatar"></div>
+          <b>苏小狼球迷</b>
+          <div class="uid">UID: WOLF-2026-1013 · 本地演示账户</div>
+          <div class="pts-big">
+            <b data-points>0</b>
+            <span>当前可用积分</span>
+          </div>
+          <div style="margin-top:14px;position:relative">
+            <button class="btn btn-ghost btn-sm" id="btnWechat" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)">💬 微信登录（演示）</button>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:20px">
+          <div class="panel-title"><span class="dot"></span><h3>本周积分榜</h3><span class="sub">演示数据</span></div>
+          <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>球迷</th><th>本周积分</th></tr></thead>
+            <tbody>
+              <tr><td><span class="rank-no top">1</span></td><td>狼王阿豪</td><td class="num"><b>286</b></td></tr>
+              <tr class="me"><td><span class="rank-no">2</span></td><td>我（苏小狼球迷）</td><td class="num"><b data-points>0</b></td></tr>
+              <tr><td><span class="rank-no">3</span></td><td>通州湾一条街</td><td class="num"><b>154</b></td></tr>
+              <tr><td><span class="rank-no">4</span></td><td>铁牛的小迷妹</td><td class="num"><b>121</b></td></tr>
+              <tr><td><span class="rank-no">5</span></td><td>港闸观察员</td><td class="num"><b>97</b></td></tr>
+            </tbody>
+          </table>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-top:10px">周榜每周一 0 点重置，前 3 名在下期赛事中屏滚动播出。</p>
+        </div>
+      </div>
+
+      <!-- 右：徽章 + 流水 -->
+      <div>
+        <div class="panel">
+          <div class="panel-title"><span class="dot"></span><h3>徽章墙</h3><span class="sub" id="badgeCount"></span></div>
+          <div class="badge-grid" id="badgeGrid"></div>
+        </div>
+        <div class="panel" style="margin-top:20px">
+          <div class="panel-title"><span class="dot"></span><h3>积分流水</h3><span class="sub">最近 60 笔</span></div>
+          <div class="log-list" id="logList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, store, BADGES, ICONS, toast } = window.Wolf;
+
+/* ---- 徽章墙 ---- */
+const entries = Object.entries(BADGES);
+$('#badgeCount').textContent = '已点亮 ' + store.badges.length + ' / ' + entries.length;
+$('#badgeGrid').innerHTML = entries.map(([id, b]) =>
+  '<div class="badge-item' + (store.badges.includes(id) ? ' got' : '') + '" title="' + b.desc + '">' +
+    '<div class="ic">' + b.ic + '</div><b>' + b.name + '</b><span>' + b.desc + '</span>' +
+  '</div>'
+).join('');
+
+/* ---- 流水 ---- */
+const logList = $('#logList');
+if(!store.logs.length){
+  logList.innerHTML = '<div class="empty-tip">还没有积分流水——去<a href="games.html" style="color:var(--pitch);font-weight:600">乐园</a>玩一局，或先<a href="missions.html" style="color:var(--pitch);font-weight:600">签个到</a>。</div>';
+}else{
+  logList.innerHTML = store.logs.map(l =>
+    '<div class="log-item">' +
+      '<span class="ic">' + (ICONS[l.type] || '⚙️') + '</span>' +
+      '<div class="li"><b>' + l.desc + '</b><span>' + l.t + '</span></div>' +
+      '<span class="tm">' + l.hm + '</span>' +
+      '<span class="delta ' + (l.delta >= 0 ? 'plus' : 'minus') + '">' + (l.delta >= 0 ? '+' : '') + l.delta + '</span>' +
+    '</div>'
+  ).join('');
+}
+
+/* ---- 微信登录（演示） ---- */
+$('#btnWechat').addEventListener('click', () => {
+  toast('演示版未接入微信登录，正式版将打通', '💬');
+});
+})();
+</script>
+</body>
+</html>

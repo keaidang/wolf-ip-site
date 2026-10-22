@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR 互动体验 · 把苏小狼放到你桌上 - 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="AR 互动体验 · 把苏小狼放到你桌面">
+<meta property="og:description" content="不用下载 App，打开网页就能把苏小狼放到你桌上：AR 互动体验与合影玩法说明。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AR 互动体验 · 把苏小狼放到你桌面">
+<meta name="twitter:description" content="不用下载 App，打开网页就能把苏小狼放到你桌上：AR 互动体验与合影玩法说明。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="index.html">首页</a> / AR 互动体验</div>
+    <h1>AR 互动体验</h1>
+    <p>手机扫一扫，苏小狼就站上你的书桌。网页版已支持摄像头实机放置：拖动、缩放、旋转、合影，不用装任何东西。</p>
+  </div>
+</div>
+
+<!-- ============ 双轨架构 ============ -->
+<section>
+  <div class="container">
+    <div class="sec-head center">
+      <div class="kicker">DUAL TRACK</div>
+      <h2>两条腿走路</h2>
+      <p>AR 的技术路线从来不是单选题。我们把"体验上限"和"可达性"拆开，分别用两条轨道满足。</p>
+    </div>
+    <div class="idea-grid">
+      <div class="idea-card" style="border-color:var(--pitch)">
+        <div class="ic">📱</div>
+        <h3>主轨 · 微信小程序 AR</h3>
+        <p>基于微信小程序的 AR 能力（相机帧 + 陀螺仪），识别平面后放置 3D 小狼，支持合影、缩放和录制。真机体验最好，是正式交付形态。</p>
+        <ul style="margin:12px 0 0 18px;font-size:13px;color:var(--ink2)">
+          <li>平面识别放置、双指缩放旋转</li>
+          <li>小狼庆祝动作 + 球队口号字幕</li>
+          <li>合影保存分享，完成即 +20 积分</li>
+        </ul>
+      </div>
+      <div class="idea-card" style="border-color:var(--wolf)">
+        <div class="ic">🌐</div>
+        <h3>实机轨 · 网页版 WebAR</h3>
+        <p>不用装任何东西，浏览器里直接把 3D 荣誉勋章放到摄像头画面上——手写 WebGL 渲染（零依赖），单指拖动、双指缩放旋转、一键合影。</p>
+        <ul style="margin:12px 0 0 18px;font-size:13px;color:var(--ink2)">
+          <li>摄像头实机背景 + 金盘浮雕苏小狼荣誉勋章</li>
+          <li>拖动/缩放/旋转/合影，完成放置 +20 积分/日</li>
+          <li>不支持摄像头时自动回退扫描演示</li>
+        </ul>
+      </div>
+      <div class="idea-card">
+        <div class="ic">🧭</div>
+        <h3>选型逻辑</h3>
+        <p>小程序 AR 识轨精度高、分享链路短，但受平台审核与机型限制；WebAR 零门槛但平面检测能力弱。主轨兜底轨并行，覆盖率与体验上限兼得。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WebAR 演示（实机 + 兜底双模式） ============ -->
+<section class="sec-alt">
+  <div class="container">
+    <div class="sec-head">
+      <div class="kicker">WEB DEMO</div>
+      <h2>在线试一试</h2>
+      <p>点击「开启摄像头」，把 3D 苏小狼荣誉勋章放到你的真实画面里：单指拖动、双指缩放旋转、一键合影。设备不支持摄像头时自动切换为扫描演示。每日首次完成放置可领 20 积分。</p>
+    </div>
+    <div class="ar-layout">
+      <div class="ar-stage" id="arStage">
+        <!-- 实机层：摄像头 + WebGL 勋章 -->
+        <div class="ar-layer" id="arLiveLayer">
+          <video id="arVideo" playsinline muted autoplay></video>
+          <canvas class="ar-gl" id="arGL" aria-label="AR 勋章渲染画布"></canvas>
+          <div class="ar-scan" id="arLiveGhost"><div class="ar-frame"><i></i><i></i><i></i><i></i><div class="line"></div></div></div>
+          <div class="ar-live-badge" id="arLiveBadge" hidden><i></i>LIVE</div>
+          <div class="ar-tip" id="arLiveTip">点击「开启摄像头」，允许浏览器使用相机</div>
+          <div class="ar-controls" id="arLiveCtl">
+            <button class="btn btn-gold btn-sm" id="btnCam">📷 开启摄像头</button>
+          </div>
+          <div class="ar-controls" id="arLiveAct" hidden>
+            <button class="btn btn-ghost btn-sm" id="btnRotL" title="向左旋转" aria-label="向左旋转">↺</button>
+            <button class="btn btn-ghost btn-sm" id="btnRotR" title="向右旋转" aria-label="向右旋转">↻</button>
+            <button class="btn btn-ghost btn-sm" id="btnReset" title="复位勋章">⤾ 复位</button>
+            <button class="btn btn-ghost btn-sm" id="btnShot" title="保存合影">📸 合影</button>
+            <button class="btn btn-gold btn-sm" id="btnPlaceLive">🏅 放置勋章</button>
+          </div>
+        </div>
+        <!-- 兜底层：扫描演示 -->
+        <div class="ar-layer" id="arDemoLayer" hidden>
+          <div class="ar-scan"><div class="ar-frame"><i></i><i></i><i></i><i></i><div class="line"></div></div></div>
+          <img class="ar-wolf" id="arWolf" src="assets/img/mascot-cutout.webp" alt="AR 小狼">
+          <div class="ar-live-err" id="arErr" hidden></div>
+          <div class="ar-tip" id="arTip">把镜头对准桌面等平面 · 点击下方按钮开始</div>
+          <div class="ar-controls">
+            <button class="btn btn-ghost btn-sm" id="btnCamRetry" hidden>↩ 重试摄像头</button>
+            <button class="btn btn-gold btn-sm" id="btnScan">🔍 扫描平面</button>
+            <button class="btn btn-ghost btn-sm" id="btnPlace" disabled style="background:rgba(255,255,255,.9)">🏅 放置勋章</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="track-card">
+          <div class="head">
+            <div class="ic" style="background:var(--pitch-soft)">📱</div>
+            <b>小程序 AR 入口</b>
+            <span class="lv" style="background:var(--pitch-soft);color:var(--pitch-deep)">主轨 · 推荐真机</span>
+          </div>
+          <p>微信扫一扫右侧二维码，在"南通苏超小狼"小程序里打开 AR 模块，体验完整的平面放置、动作播放与合影分享。</p>
+        </div>
+        <div class="qr-box">
+          <svg id="qrSvg" viewBox="0 0 25 25" shape-rendering="crispEdges" aria-label="小程序码占位"></svg>
+          <div class="qi">
+            <b>南通苏超小狼 · 小程序</b>
+            <p>示意码位：正式版替换为小程序太阳码。<br>当前网页演示路径：AR 体验 → 放置小狼。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 玩法三步 ============ -->
+<section>
+  <div class="container">
+    <div class="sec-head center">
+      <div class="kicker">HOW TO</div>
+      <h2>三步玩起来</h2>
+    </div>
+    <div class="loop-grid" style="position:static">
+      <div class="loop-step" style="background:var(--card);border-color:var(--line);color:var(--ink)">
+        <div class="n">1</div>
+        <h3>扫码进入</h3>
+        <p style="color:var(--ink2)">微信扫码打开小程序 AR 模块；没有微信环境就用本页网页演示。</p>
+      </div>
+      <div class="loop-step" style="background:var(--card);border-color:var(--line);color:var(--ink)">
+        <div class="n">2</div>
+        <h3>识别平面</h3>
+        <p style="color:var(--ink2)">对准桌面或地面缓慢移动，看到识别框变稳就可以放置。</p>
+      </div>
+      <div class="loop-step" style="background:var(--card);border-color:var(--line);color:var(--ink)">
+        <div class="n">3</div>
+        <h3>放置互动</h3>
+        <p style="color:var(--ink2)">小狼落场，播放庆祝动作；可缩放、旋转、合影，完成即 +20 积分/日。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/ar-webgl.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, store, saveStore, addPoints, grantBadge, toast, today } = window.Wolf;
+
+/* ---- 装饰性二维码（正式版替换为小程序太阳码） ---- */
+(function drawQR(){
+  const svg = $('#qrSvg'); if(!svg) return;
+  const N = 25, cell = 100 / N;
+  let s = '';
+  const finder = (x, y) => {
+    s += '<rect x="' + (x*cell) + '" y="' + (y*cell) + '" width="' + (7*cell) + '" height="' + (7*cell) + '" fill="#0f172a"/>';
+    s += '<rect x="' + ((x+1)*cell) + '" y="' + ((y+1)*cell) + '" width="' + (5*cell) + '" height="' + (5*cell) + '" fill="#fff"/>';
+    s += '<rect x="' + ((x+2)*cell) + '" y="' + ((y+2)*cell) + '" width="' + (3*cell) + '" height="' + (3*cell) + '" fill="#0f172a"/>';
+  };
+  const inFinder = (x, y) =>
+    (x < 8 && y < 8) || (x > N-9 && y < 8) || (x < 8 && y > N-9);
+  let seed = 20260601;
+  const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  for(let y = 0; y < N; y++){
+    for(let x = 0; x < N; x++){
+      if(inFinder(x, y)) continue;
+      if(rnd() < 0.45){
+        s += '<rect x="' + (x*cell) + '" y="' + (y*cell) + '" width="' + cell + '" height="' + cell + '" fill="#0f172a"/>';
+      }
+    }
+  }
+  finder(0, 0); finder(N-7, 0); finder(0, N-7);
+  svg.innerHTML = s;
+})();
+
+/* ---- 每日 AR 积分（实机轨 / 兜底轨共用） ---- */
+function awardAR(){
+  if(store.dailyAR === today()){
+    toast('今日 AR 体验积分已领取，明天再来', '📦');
+    return false;
+  }
+  store.dailyAR = today();
+  addPoints(20, 'ar', 'AR 放置体验');
+  grantBadge('ar');
+  toast('AR 放置完成 +20 积分', '📦');
+  return true;
+}
+
+/* ============ 兜底轨：扫描演示 ============ */
+const btnScan = $('#btnScan'), btnPlace = $('#btnPlace'), wolfImg = $('#arWolf'), tip = $('#arTip');
+let scanned = false, scanTimer = null;
+
+btnScan.addEventListener('click', () => {
+  if(scanned) return;
+  btnScan.disabled = true;
+  btnScan.textContent = '⏳ 识别中…';
+  tip.textContent = '正在识别平面…请保持镜头稳定';
+  scanTimer = setTimeout(() => {
+    scanned = true;
+    tip.textContent = '✅ 识别成功！点击「放置小狼」';
+    btnPlace.disabled = false;
+    btnScan.textContent = '✓ 已识别';
+    btnPlace.classList.remove('btn-ghost');
+    btnPlace.classList.add('btn-gold');
+  }, 2200);
+});
+
+btnPlace.addEventListener('click', () => {
+  if(!scanned) return;
+  wolfImg.classList.add('show');
+  tip.textContent = '🐺 苏小狼已就位！开启摄像头可体验真机放置';
+  btnPlace.disabled = true;
+  btnPlace.textContent = '✓ 已放置';
+  awardAR();
+});
+
+/* ============ 实机轨：摄像头 WebAR ============ */
+const stage = $('#arStage'), liveLayer = $('#arLiveLayer'), demoLayer = $('#arDemoLayer');
+const video = $('#arVideo'), canvas = $('#arGL'), ghost = $('#arLiveGhost'), badge = $('#arLiveBadge');
+const liveTip = $('#arLiveTip'), liveCtl = $('#arLiveCtl'), liveAct = $('#arLiveAct'), errBox = $('#arErr');
+const btnCam = $('#btnCam'), btnCamRetry = $('#btnCamRetry');
+let ar = null, stream = null, livePlaced = false;
+
+function camSupported(){
+  if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) return false;
+  if(window.isSecureContext) return true;
+  return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+}
+
+function stopCam(){
+  if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
+}
+
+/* 切换到兜底演示层；reason 非空时展示原因与重试入口 */
+function toDemo(reason){
+  liveLayer.hidden = true;
+  demoLayer.hidden = false;
+  if(reason){
+    errBox.hidden = false;
+    errBox.textContent = reason;
+    btnCamRetry.hidden = false;
+    tip.textContent = '已切换为扫描演示 · 也可以重试摄像头';
+  }else{
+    tip.textContent = '把镜头对准桌面等平面 · 点击下方按钮开始';
+  }
+}
+
+/* 从兜底层重试：回到实机层 */
+function backToLive(){
+  errBox.hidden = true;
+  btnCamRetry.hidden = true;
+  demoLayer.hidden = true;
+  liveLayer.hidden = false;
+  liveCtl.hidden = false;
+  liveAct.hidden = true;
+  ghost.hidden = false;
+  badge.hidden = true;
+  liveTip.textContent = '点击「开启摄像头」，允许浏览器使用相机';
+  startCam();
+}
+
+async function startCam(){
+  if(!camSupported()){
+    toDemo('当前环境不支持摄像头调用（需要 HTTPS 或本机 localhost 访问），已切换为扫描演示');
+    return;
+  }
+  btnCam.disabled = true;
+  btnCam.textContent = '⏳ 启动中…';
+  liveTip.textContent = '正在请求相机权限…';
+  let s;
+  try{
+    s = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 960 } },
+      audio: false
+    });
+  }catch(e){
+    const map = {
+      NotAllowedError: '相机权限被拒绝，请在地址栏权限设置里允许后重试',
+      NotFoundError: '未检测到可用摄像头设备',
+      NotReadableError: '相机被其他应用占用，请关闭后重试',
+      SecurityError: '浏览器安全策略限制，需 HTTPS 环境'
+    };
+    toDemo(map[e.name] || ('摄像头启动失败：' + (e.message || e.name)));
+    return;
+  }
+  stream = s;
+  video.srcObject = stream;
+  try{ await video.play(); }catch(e){ /* 自动播放策略兜底：muted+playsinline 通常可播 */ }
+  if(!ar){
+    /* 3D 展示物 = 苏小狼荣誉勋章（程序化生成，零贴图零下载，离线可用） */
+    try{ ar = window.ArWolf ? ArWolf.mount({ stage, video, canvas, badge: true }) : null; }
+    catch(e){ ar = null; }
+  }
+  if(!ar){
+    stopCam();
+    toDemo('当前设备不支持 WebGL 3D 渲染，已切换为扫描演示');
+    return;
+  }
+  ghost.hidden = true;
+  badge.hidden = false;
+  liveCtl.hidden = true;
+  liveAct.hidden = false;
+  liveTip.textContent = '单指拖动移动 · 双指缩放旋转 · 滚轮缩放';
+  btnCam.disabled = false;
+  ar.cheer();
+  toast('摄像头已开启，把勋章拖到桌上吧', '📷');
+}
+
+btnCam.addEventListener('click', startCam);
+btnCamRetry.addEventListener('click', backToLive);
+
+$('#btnRotL').addEventListener('click', () => { if(ar) ar.rotate(-0.35); });
+$('#btnRotR').addEventListener('click', () => { if(ar) ar.rotate(0.35); });
+$('#btnReset').addEventListener('click', () => { if(ar) ar.reset(); });
+
+$('#btnPlaceLive').addEventListener('click', () => {
+  if(!ar) return;
+  ar.cheer();
+  if(!livePlaced){ livePlaced = true; awardAR(); }
+  else toast('小狼已就位，试试拖动 / 缩放 / 合影', '🐺');
+});
+
+$('#btnShot').addEventListener('click', () => {
+  if(!ar) return;
+  if(!video.videoWidth){ toast('相机准备中，请稍候再试', '⏳'); return; }
+  const c = ar.shot();
+  if(!c.toBlob){ // 极老浏览器降级：直接打开大图
+    const a = document.createElement('a');
+    a.download = '苏小狼-AR合影-' + today() + '.png';
+    a.href = c.toDataURL('image/png');
+    a.click();
+    return;
+  }
+  c.toBlob(b => {
+    const a = document.createElement('a');
+    a.download = '苏小狼-AR合影-' + today() + '.png';
+    a.href = URL.createObjectURL(b);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast('合影已保存，去下载目录看看吧', '📸');
+  }, 'image/png');
+});
+
+window.addEventListener('beforeunload', () => {
+  if(scanTimer) clearTimeout(scanTimer);
+  if(ar) ar.stop();
+  stopCam();
+});
+
+/* 首屏探测：环境不支持摄像头直接走兜底层 */
+if(!camSupported()){
+  toDemo('当前环境不支持摄像头调用（需要 HTTPS 或本机 localhost 访问），已切换为扫描演示');
+}
+})();
+</script>
+</body>
+</html>

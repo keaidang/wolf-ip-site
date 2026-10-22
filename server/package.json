@@ -1,0 +1,13 @@
+{
+  "name": "wolf-ip-server",
+  "version": "0.1.0",
+  "description": "小狼足球乐园 · 积分与盲盒后端骨架（Node.js 22 原生模块，零 npm 依赖）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {}
+}

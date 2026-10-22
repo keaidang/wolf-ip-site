@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏进行中 - 小狼足球乐园</title>
+<link rel="icon" type="image/svg+xml" href="assets/img/wolf.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e5f55" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<!-- 分享卡片元数据（微信转发 / 社交平台缩略图） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小狼足球乐园">
+<meta property="og:title" content="游戏进行中 · 小狼足球乐园">
+<meta property="og:description" content="游戏进行中：专注于眼前的这一局，结算后积分自动到账。">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="游戏进行中 · 小狼足球乐园">
+<meta name="twitter:description" content="游戏进行中：专注于眼前的这一局，结算后积分自动到账。">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+<script>(function(){try{var abs=new URL('assets/img/og-image.jpg',location.href).href,url=location.origin+location.pathname;document.querySelector('meta[property="og:url"]').setAttribute('content',url);['og:image','twitter:image'].forEach(function(n){var m=document.querySelector('meta[property="'+n+'"]')||document.querySelector('meta[name="'+n+'"]');if(m)m.setAttribute('content',abs)})}catch(e){}})();</script>
+<script>try{var t=localStorage.getItem("wolf.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header id="siteHeader"></header>
+
+<div class="play-topbar">
+  <a class="back" href="games.html">← 返回乐园</a>
+  <h1 class="gname" id="gName">加载中…<span class="en" id="gEn"></span></h1>
+  <div class="spacer"></div>
+  <button class="pbtn" id="btnFull" title="放大游戏画面（Esc 退出）">⛶ 放大</button>
+  <button class="pbtn" id="btnRetry" title="游戏空白/卡住时点此重载">🔄 重试</button>
+  <div class="pts-now">本局 <i id="sessionPts">0</i> 积分 · 总积分 <span data-points>0</span></div>
+</div>
+
+<div class="container">
+  <div class="play-layout">
+    <div class="game-frame-wrap" id="frameWrap">
+      <iframe id="gameFrame" title="游戏画面" allow="autoplay; fullscreen"></iframe>
+    </div>
+    <aside class="play-side">
+      <div class="panel">
+        <h3>📖 怎么玩</h3>
+        <ul class="how" id="howList"></ul>
+        <div class="rate" id="rateBox"></div>
+      </div>
+      <div class="panel">
+        <h3>💡 小狼教练的 tips</h3>
+        <ul class="how" id="tipList"></ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer id="siteFooter"></footer>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/bridge.js"></script>
+<script>
+(function(){
+'use strict';
+const { $, addGamePoints, gamePointsToday, recordBest, toast } = window.Wolf;
+const WolfBridge = window.WolfBridge;
+
+const META = {
+  'wolf-pass3d': {
+    name: '神笔球王', en: 'MAGIC PASS KING', portrait: false,
+    how: ['<b>按住鼠标/手指画线</b>：松开后球沿着你画的线飞，能画弧线', '线画到<b>对方球门</b>里 = 射门；点一下队友 = 快速传球', '传球线路靠近防守者会被<b>拦截</b>，注意画空档', '进球 <b>+8 秒</b>，60 秒内尽量多进球刷连击'],
+    tips: ['画短直传快，画大弧线能绕过防守但慢', '射门往球门两个下角画，门将扑救率约三成', '连击不断分数翻倍，别贪大弧线断连击'],
+    rate: '<b>积分规则</b><br>每进 1 球 = 8 积分；单场 5 球以上额外 +4。单款每日上限 20 积分。'
+  },
+  'wolf-dribble': {
+    name: '狼之盘带', en: 'WOLF DRIBBLE', portrait: true,
+    how: ['面对不同类型防守者，出<b>对应的绝技</b>', '绝技会随着闯关逐步解锁，底部栏点选', '过掉所有人冲进禁区射门得分', '被断 <b>3 次</b>本关重来，命都在血条里'],
+    tips: ['看清防守者类型再出招，乱按会被断', '提前规划连续过人的顺序能攒连击', '被断 3 次前哪怕少得分也要先保命'],
+    rate: '<b>积分规则</b><br>每 200 本关得分 = 1 积分。单款每日上限 20 积分。'
+  },
+  'wolf-tft': {
+    name: '狼之棋阵', en: 'WOLF AUTO CHESS', portrait: false,
+    how: ['准备阶段：花钱买球员、拖上球场、合成升星', '攒利息、拿强化，阵容和羁绊决定战斗力', '战斗自动进行，失败按对方存活数扣生命', '生命归零赛季结束，走得越远积分越多'],
+    tips: ['前期存钱吃利息比乱买强', '同羁绊堆人数激活团队加成', '血量健康时敢试新阵容，残血就玩熟的'],
+    rate: '<b>积分规则</b><br>每小关 = 5 积分（如 3-12 关 = 27 积分）。单款每日上限 20 积分。'
+  },
+  'football-linkgame': {
+    name: '绝技连连看', en: 'SKILL LINK', portrait: false,
+    how: ['点选两张<b>相同动作</b>的牌即可消除', '连线绕不出场外，但不超过两次折弯', '消除后弹出该动作的<b>教学视频</b>', '通关全部 18 对，解锁 12 个绝技图鉴'],
+    tips: ['先消边缘的牌，不容易被围死', '记不住就优先消重复出现的动作', '时间充裕时点「提示」不扣分'],
+    rate: '<b>积分规则</b><br>每 100 得分 = 1 积分。单款每日上限 20 积分。'
+  }
+};
+
+const params = new URLSearchParams(location.search);
+const gid = params.get('g');
+const meta = META[gid];
+if(!meta){
+  toast('没有找到这款游戏，已返回乐园', '🐺');
+  location.replace('games.html');
+  return;
+}
+
+document.title = meta.name + ' - 小狼足球乐园';
+$('#gName').childNodes[0].nodeValue = meta.name + ' ';
+$('#gEn').textContent = meta.en;
+$('#howList').innerHTML = meta.how.map(h => '<li>' + h + '</li>').join('');
+$('#tipList').innerHTML = meta.tips.map(t => '<li>' + t + '</li>').join('');
+$('#rateBox').innerHTML = meta.rate;
+if(meta.portrait) $('#frameWrap').classList.add('portrait');
+$('#gameFrame').src = 'games/' + gid + '/index.html';
+
+/* ---- 放大 / 全屏：iframe 容器进全屏，Esc 或再点退出 ---- */
+const frameWrap = $('#frameWrap');
+const gameFrame = $('#gameFrame');
+const btnFull = $('#btnFull');
+btnFull.addEventListener('click', () => {
+  if(document.fullscreenElement){
+    document.exitFullscreen().catch(()=>{});
+  }else{
+    (frameWrap.requestFullscreen || frameWrap.webkitRequestFullscreen || function(){}).call(frameWrap);
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  btnFull.textContent = document.fullscreenElement ? '✕ 退出放大' : '⛶ 放大';
+});
+
+/* ---- 重试：重新加载游戏 iframe（针对偶发加载失败/空白） ---- */
+$('#btnRetry').addEventListener('click', () => {
+  gameFrame.src = 'games/' + gid + '/index.html';
+  toast('正在重新加载游戏…', '🔄');
+});
+
+/* ---- 加载看门狗：8 秒仍未加载完则提示重试 ---- */
+let frameLoaded = false;
+gameFrame.addEventListener('load', () => { frameLoaded = true; });
+setTimeout(() => {
+  if(!frameLoaded) toast('游戏加载较慢？点顶部「🔄 重试」再试一次', '⏳');
+}, 8000);
+
+/* ---- 今日已获积分提示 ---- */
+const gotToday = gamePointsToday(gid);
+if(gotToday > 0){
+  setTimeout(() => toast('今天这款游戏已入账 ' + gotToday + ' 积分（上限 20）', '⏰'), 1200);
+}
+
+/* ---- 分数回传 ---- */
+let sessionPts = 0;
+const sessionEl = $('#sessionPts');
+function onScore(score, pts){
+  recordBest(gid, score);          // 最高分照记（积分封顶不影响纪录）
+  const real = addGamePoints(gid, meta.name, pts);
+  if(real > 0){
+    sessionPts += real;
+    sessionEl.textContent = sessionPts;
+  }
+}
+WolfBridge.startBridge($('#gameFrame'), gid, onScore);
+
+/* 兜底：接收来自 iframe 的 postMessage（被其他容器嵌入时） */
+window.addEventListener('message', e => {
+  const d = e.data;
+  if(d && d.type === 'wolf:score' && d.game === gid) onScore(d.score, d.points);
+});
+})();
+</script>
+</body>
+</html>

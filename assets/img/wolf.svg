@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 小狼足球 IP 徽标：低多边形狼头 + 球场圆章 -->
+  <circle cx="32" cy="32" r="30" fill="#0e5f55"/>
+  <circle cx="32" cy="32" r="26.5" fill="none" stroke="#fde68a" stroke-width="1.6" stroke-dasharray="3 2.4"/>
+  <!-- 耳朵 -->
+  <polygon points="15,27 20,11 28,21" fill="#f8fafc"/>
+  <polygon points="49,27 44,11 36,21" fill="#f8fafc"/>
+  <polygon points="19.5,24 22,15 26,21.5" fill="#cbd5e1"/>
+  <polygon points="44.5,24 42,15 38,21.5" fill="#cbd5e1"/>
+  <!-- 头部（带颊毛） -->
+  <path d="M32 18 L43 22 L48 30 L45.5 36 L48 41 L42 47 L35.5 51 L32 53 L28.5 51 L22 47 L16 41 L18.5 36 L16 30 L21 22 Z" fill="#f8fafc"/>
+  <!-- 额头纹 -->
+  <path d="M32 23 L28.5 30 L32 27.5 L35.5 30 Z" fill="#0e5f55" opacity="0.35"/>
+  <!-- 眼睛 -->
+  <ellipse cx="26" cy="32.5" rx="2.4" ry="2.8" fill="#c9962e"/>
+  <ellipse cx="38" cy="32.5" rx="2.4" ry="2.8" fill="#c9962e"/>
+  <circle cx="26" cy="32.5" r="0.9" fill="#0f172a"/>
+  <circle cx="38" cy="32.5" r="0.9" fill="#0f172a"/>
+  <!-- 口鼻 -->
+  <path d="M28 38 L36 38 L33.5 45 L30.5 45 Z" fill="#e2e8f0"/>
+  <circle cx="32" cy="41.5" r="1.9" fill="#0f172a"/>
+  <path d="M32 43.5 L32 46 M32 46 L28.5 48 M32 46 L35.5 48" stroke="#0f172a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- 足球 -->
+  <circle cx="47" cy="47" r="7" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2"/>
+  <polygon points="47,43 50.2,45.2 49,49 45,49 43.8,45.2" fill="#0f172a"/>
+  <path d="M47 43 L47 40.5 M50.2 45.2 L53 44.6 M43.8 45.2 L41 44.6 M45 49 L43.6 52 M49 49 L50.4 52" stroke="#0f172a" stroke-width="1.1"/>
+</svg>
