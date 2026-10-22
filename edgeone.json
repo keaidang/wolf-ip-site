@@ -1,6 +1,8 @@
 {
   "buildCommand": "node tools/stage.js",
+  "installCommand": "echo skip-install",
   "outputDirectory": "dist",
+  "nodeVersion": "22.11.0",
   "headers": [
     {
       "source": "/sw.js",

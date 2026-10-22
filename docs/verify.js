@@ -139,6 +139,13 @@ for (const page of PAGES) {
     check('edgeone.json 输出目录为 dist', cfg.outputDirectory === 'dist', String(cfg.outputDirectory));
     check('edgeone.json 构建命令调用 tools/stage.js',
       typeof cfg.buildCommand === 'string' && /tools\/stage\.js/.test(cfg.buildCommand), String(cfg.buildCommand));
+    /* 平台构建镜像只预装这几个 Node 版本，写别的版本会构建失败 */
+    const NODE_VERSIONS = ['14.21.3', '16.20.2', '18.20.4', '20.18.0', '22.11.0'];
+    check('edgeone.json 锁定平台预装的 Node 版本',
+      NODE_VERSIONS.includes(cfg.nodeVersion), String(cfg.nodeVersion));
+    check('edgeone.json 安装命令不拉取依赖',
+      cfg.installCommand === undefined || !/npm\s+(install|ci)/.test(String(cfg.installCommand)),
+      String(cfg.installCommand));
     const rules = Array.isArray(cfg.headers) ? cfg.headers : [];
     check('edgeone.json 声明 headers 规则', rules.length > 0);
     const swRule = rules.find(r => r.source === '/sw.js');
@@ -151,6 +158,15 @@ for (const page of PAGES) {
     check('HTML 走协商缓存', !!htmlRule, '缺 /*.html 规则');
     const rootRule = rules.find(r => r.source === '/*');
     check('全局安全响应头', !!rootRule && (rootRule.headers || []).some(x => x.key === 'X-Content-Type-Options'));
+    /* 线上实测：manifest 不声明 MIME 会被发成 application/octet-stream，PWA 装不上 */
+    const mfRule = rules.find(r => r.source === '/manifest.webmanifest');
+    check('manifest 声明 manifest+json MIME', !!mfRule &&
+      (mfRule.headers || []).some(x => x.key === 'Content-Type' && /application\/manifest\+json/.test(x.value)));
+    /* 线上实测：同一 header key 以靠后的规则为准，图片规则必须排在 /assets/* 之后 */
+    const iAssets = rules.findIndex(r => r.source === '/assets/*');
+    const iImg = rules.findIndex(r => r.source === '/assets/img/*');
+    check('/assets/img/* 规则排在 /assets/* 之后',
+      iAssets >= 0 && iImg > iAssets, 'index ' + iAssets + ' -> ' + iImg);
   }
   check('404.html 位于输出根目录（Makers 自动识别）', exists('404.html'));
 }

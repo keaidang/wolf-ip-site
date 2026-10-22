@@ -110,13 +110,16 @@ Makers 新建项目 → 导入 Git 仓库 `keaidang/wolf-ip-site`（分支 `main
 
 | 配置项 | 填写 |
 | --- | --- |
-| 预设框架 | `Other` |
+| 预设框架 | `Other`（站点无框架，此项只作占位） |
 | 根目录 | `./` |
 | 构建命令 | `node tools/stage.js` |
-| 安装命令 | **留空**（没有依赖，不要填 `npm install`） |
+| 安装命令 | **留空**或 `echo skip-install`（零依赖，别填 `npm install`） |
 | 构建输出目录 | `dist` |
+| Node 版本 | `22.11.0` |
 
-> 这些值 `edgeone.json` 里也写了（`buildCommand` / `outputDirectory`），控制台留空时会以配置文件为准；但界面必填项按上表填，避免歧义。打包结果 95 个文件 / 5.72 MB。
+> 优先级：`edgeone.json` 的 `buildCommand` / `installCommand` / `outputDirectory` / `nodeVersion` **覆盖**控制台「项目设置 → 构建部署配置」的同名字段，四项全“未设置”也能正常构建；上表填上只是让界面自解释。
+> Node 版本必须是平台预装的 `14.21.3` / `16.20.2` / `18.20.4` / `20.18.0` / `22.11.0` 之一，写其他版本会构建失败。
+> 构建产物 95 个文件 / 5.72 MB。
 
 ### 方式 B：CLI / 控制台直传
 
